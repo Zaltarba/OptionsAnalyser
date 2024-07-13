@@ -52,11 +52,11 @@ def get_last_price(ticker):
     return last_price
 
 try:
-    last_price = get_last_price(str(ticker))
-    st.write(ticker)
+    last_price = get_last_price(ticker)
 except:
     last_price = 1
 
+last_price = 1
 st.write(last_price)
 min_strike = int(last_price * 0.8)
 max_strike = int(last_price * 1.2)
