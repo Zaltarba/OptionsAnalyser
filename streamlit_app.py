@@ -55,7 +55,9 @@ try:
     last_price = get_last_price(ticker)
 except:
     last_price = 1
-    
+
+last_price = 10
+
 min_volume = st.number_input('Set minimum volume', value=1000, step=25)
 min_strike = st.slider('Select minimum strike price', 0, last_price*10, value=last_price*0.8, step=int(last_price*0.01))
 max_strike = st.slider('Select maximum strike price', 0, last_price*0.1, value=last_price*1.2, step=int(last_price*0.01))
