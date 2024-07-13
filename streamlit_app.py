@@ -60,7 +60,7 @@ def compute_volatility_surface_plotly(options_data):
     # Prepare the grid
     x = options_data['Time to Expiration']
     y = options_data['strike']
-    z = options_data['impliedVolatility'] * 100
+    z = options_data['impliedVolatility'] 
 
     # Create grid spaces
     xi = np.linspace(x.min(), x.max(), 100)
