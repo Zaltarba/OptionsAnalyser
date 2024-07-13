@@ -32,8 +32,16 @@ def get_options_data(ticker):
     all_options = all_options.sort_values(by=["strike", "Time to Expiration", "Type"])
     all_options["volume"] = all_options["volume"].fillna(0)
 
-    data = stock.history(period='2w', interval='1d')
-    last_price = data['Close'].iloc[-1]
+    data = stock.history(period='1d', interval='1m')
+    # Get the last price from the close column
+    if data.empty:
+        data = stock.history(period='2w', interval='1d')
+        if data.empty:
+            last_price = 500
+        else:
+            last_price = data['Close'].iloc[-1]
+    else:
+        last_price = data['Close'].iloc[-1]
     
     return all_options, last_price
 
