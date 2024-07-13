@@ -60,7 +60,7 @@ def compute_volatility_surface_plotly(options_data):
     # Prepare the grid
     x = options_data['Time to Expiration']
     y = options_data['strike']
-    z = 100 * options_data['impliedVolatility']
+    z = options_data['impliedVolatility'] * 100
 
     # Create grid spaces
     xi = np.linspace(x.min(), x.max(), 100)
@@ -68,8 +68,12 @@ def compute_volatility_surface_plotly(options_data):
     xi, yi = np.meshgrid(xi, yi)
     zi = griddata((x, y), z, (xi, yi), method='cubic')
 
+    # Ensure no negative values in the interpolated data
+    zi[zi < 0] = 0
+
     # Apply Gaussian filter for smoothing
     zi_smoothed = gaussian_filter(zi, sigma=0.1)  # Adjust the sigma value to control the smoothness
+
     # Prepare the figure
     fig = go.Figure(data=[go.Surface(x=xi, y=yi, z=zi_smoothed)])
 
@@ -82,7 +86,7 @@ def compute_volatility_surface_plotly(options_data):
             zaxis_title='Implied Volatility (%)',
             xaxis=dict(tickformat='.2f'),
             yaxis=dict(tickformat='$,.0f'),
-            zaxis=dict(tickformat='.3f'),
+            zaxis=dict(tickformat='.2%'),
         ),
         autosize=True,
         margin=dict(l=0, r=0, b=0, t=30)
