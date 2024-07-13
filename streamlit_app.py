@@ -83,7 +83,7 @@ def compute_volatility_surface_plotly(options_data):
             zaxis_title='Implied Volatility (%)',
             xaxis=dict(tickformat='.2f'),
             yaxis=dict(tickformat='$,.0f'),
-            zaxis=dict(tickformat='.2%'),
+            zaxis=dict(tickformat='.3f'),
         ),
         autosize=True,
         margin=dict(l=0, r=0, b=0, t=30)
