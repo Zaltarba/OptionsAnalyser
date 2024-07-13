@@ -32,9 +32,29 @@ def get_options_data(ticker):
     return all_options
 
 ticker = st.text_input('Enter ticker to be studied, e.g. MA,META,V,AMZN,JPM,BA', '').upper()
-min_volume = st.number_input('Set minimum volume', value=10, step=1)
-min_strike = st.slider('Select minimum strike price', 0, 3000, 0, 50)
-max_strike = st.slider('Select maximum strike price', 0, 3000, 3000, 50)
+
+def get_last_price(ticker):
+    # Load the ticker data
+    stock = yf.Ticker(ticker)
+    
+    # Fetch historical data for the last week with 1-minute granularity
+    # Note: 1-minute granularity might be limited to certain subscriptions or the recent data
+    data = stock.history(period='1wk', interval='1m')
+    
+    # Check if data is empty
+    if data.empty:
+        print("No data available for the specified ticker and interval.")
+        return None
+    
+    # Get the last price from the close column
+    last_price = data['Close'].iloc[-1]
+    
+    return last_price
+
+last_strike_price = get_last_price(ticker)
+min_volume = st.number_input('Set minimum volume', value=1000, step=25)
+min_strike = st.slider('Select minimum strike price', 0, 3000, 0, current_price*0.8)
+max_strike = st.slider('Select maximum strike price', 0, 3000, 3000, current_price*1.2)
 
 def compute_volatility_surface_plotly(options_data):
     x = options_data['Time to Expiration']
