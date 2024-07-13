@@ -8,7 +8,6 @@ seaborn
 gunicorn
 yfinance
 numpy 
-prophet==1.1.3
 holidays
 datetime
 wordcloud
