@@ -69,7 +69,7 @@ def compute_volatility_surface_plotly(options_data):
     zi = griddata((x, y), z, (xi, yi), method='cubic')
 
     # Apply Gaussian filter for smoothing
-    zi_smoothed = gaussian_filter(zi, sigma=1)  # Adjust the sigma value to control the smoothness
+    zi_smoothed = gaussian_filter(zi, sigma=100)  # Adjust the sigma value to control the smoothness
 
     # Prepare the figure
     fig = go.Figure(data=[go.Surface(x=xi, y=yi, z=zi_smoothed)])
