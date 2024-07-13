@@ -79,7 +79,7 @@ def compute_volatility_surface_plotly(options_data):
     return fig
 
 if ticker != "":
-    options_data = get_option_data(ticker)
+    options_data = get_options_data(ticker)
     fig = compute_volatility_surface_plotly(options_data)
     st.plotly_chart(fig, use_container_width=True)
 
