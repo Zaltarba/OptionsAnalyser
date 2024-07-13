@@ -40,6 +40,52 @@ def get_options_data(ticker):
 
 ticker = st.text_input('Enter ticker to be studied, e.g. MA,META,V,AMZN,JPM,BA', '').upper()
 
+def compute_volatility_surface_plotly(options_data):
+    # Convert expiration date to 'Time to Expiration' in years
+    options_data['Time to Expiration'] = pd.to_datetime(options_data['Expiration']) - pd.Timestamp.today()
+    options_data['Time to Expiration'] = options_data['Time to Expiration'].dt.days / 365
+    
+    # Prepare the figure
+    fig = go.Figure()
+
+    # Add scatter plots for each option type
+    for opt_type in options_data['Type'].unique():
+        subset = options_data[options_data['Type'] == opt_type]
+        fig.add_trace(
+            go.Scatter3d(
+                x=subset['Time to Expiration'],
+                y=subset['strike'],
+                z=subset['impliedVolatility'] * 100,
+                mode='markers',
+                marker=dict(size=3),
+                name=f'{opt_type} Options'
+            )
+        )
+
+    # Update layout of the plot
+    fig.update_layout(
+        title='Volatility Surface',
+        scene=dict(
+            xaxis_title='Time to Expiration (Years)',
+            yaxis_title='Strike Price ($)',
+            zaxis_title='Implied Volatility (%)',
+            xaxis=dict(tickformat='.2f'),
+            yaxis=dict(tickformat='$,.0f'),
+            zaxis=dict(tickformat='.2%'),
+        ),
+        margin=dict(l=0, r=0, b=0, t=30)
+    )
+
+    return fig
+
+if ticker != "":
+    options_data = get_option_data()
+    fig = compute_volatility_surface_plotly(options_data)
+    st.plotly_chart(fig, use_container_width=True)
+
+else:
+    st.write("No options data available.")
+
 hide_streamlit_style = """
             <style>
             #MainMenu {visibility: hidden;}
