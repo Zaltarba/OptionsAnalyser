@@ -42,7 +42,7 @@ def get_options_data(ticker):
     
     all_options["Type"] = all_options["contractSymbol"]
     all_options["Type"] = all_options["Type"].apply(lambda x:x.split(ticker)[1][6]).map({"C":"Call", "P":"Put"})
-    all_options = all_options.sort_values(by=["Strike", "Time to Expiration", "Type"])
+    all_options = all_options.sort_values(by=["strike", "Time to Expiration", "Type"])
     
     return all_options
 
