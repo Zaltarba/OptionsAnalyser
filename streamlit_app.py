@@ -47,22 +47,19 @@ def compute_volatility_surface_plotly(options_data):
     options_data['Time to Expiration'] = pd.to_datetime(options_data['Expiration']) - pd.Timestamp.today()
     options_data['Time to Expiration'] = options_data['Time to Expiration'].dt.days / 365
     
-    # Prepare the figure
-    fig = go.Figure()
+    # Prepare the grid
+    x = options_data['Time to Expiration']
+    y = options_data['strike']
+    z = options_data['impliedVolatility'] * 100
 
-    # Add scatter plots for each option type
-    for opt_type in options_data['Type'].unique():
-        subset = options_data[options_data['Type'] == opt_type]
-        fig.add_trace(
-            go.Scatter3d(
-                x=subset['Time to Expiration'],
-                y=subset['strike'],
-                z=subset['impliedVolatility'] * 100,
-                mode='markers',
-                marker=dict(size=3),
-                name=f'{opt_type} Options'
-            )
-        )
+    # Create grid spaces
+    xi = np.linspace(x.min(), x.max(), 100)
+    yi = np.linspace(y.min(), y.max(), 100)
+    xi, yi = np.meshgrid(xi, yi)
+    zi = griddata((x, y), z, (xi, yi), method='cubic')
+
+    # Prepare the figure
+    fig = go.Figure(data=[go.Surface(x=xi, y=yi, z=zi)])
 
     # Update layout of the plot
     fig.update_layout(
@@ -75,9 +72,9 @@ def compute_volatility_surface_plotly(options_data):
             yaxis=dict(tickformat='$,.0f'),
             zaxis=dict(tickformat='.2%'),
         ),
+        autosize=True,
         margin=dict(l=0, r=0, b=0, t=30)
     )
-
     return fig
 
 if ticker != "":
