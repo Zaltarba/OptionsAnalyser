@@ -53,10 +53,7 @@ def get_options_data(ticker):
 ticker = st.text_input('Enter ticker to be studied, e.g. MA,META,V,AMZN,JPM,BA', '').upper()
 
 def compute_volatility_surface_plotly(options_data):
-    # Convert expiration date to 'Time to Expiration' in years
-    options_data['Time to Expiration'] = pd.to_datetime(options_data['Expiration']) - pd.Timestamp.today()
-    options_data['Time to Expiration'] = options_data['Time to Expiration'].dt.days / 365
-    
+
     # Prepare the grid
     x = options_data['Time to Expiration']
     y = options_data['strike']
@@ -67,6 +64,9 @@ def compute_volatility_surface_plotly(options_data):
     yi = np.linspace(y.min(), y.max(), 100)
     xi, yi = np.meshgrid(xi, yi)
     zi = griddata((x, y), z, (xi, yi), method='cubic')
+
+    # Ensure no negative values in the interpolated data
+    zi[zi < 0] = 0
 
     # Apply Gaussian filter for smoothing
     zi_smoothed = gaussian_filter(zi, sigma=1)  # Adjust the sigma value to control the smoothness
@@ -83,7 +83,7 @@ def compute_volatility_surface_plotly(options_data):
             zaxis_title='Implied Volatility (%)',
             xaxis=dict(tickformat='.2f'),
             yaxis=dict(tickformat='$,.0f'),
-            zaxis=dict(tickformat='.2%'),
+            zaxis=dict(tickformat='.3f'),
         ),
         autosize=True,
         margin=dict(l=0, r=0, b=0, t=30)
