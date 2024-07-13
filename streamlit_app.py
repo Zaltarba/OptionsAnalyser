@@ -68,9 +68,6 @@ def compute_volatility_surface_plotly(options_data):
     xi, yi = np.meshgrid(xi, yi)
     zi = griddata((x, y), z, (xi, yi), method='cubic')
 
-    # Ensure no negative values in the interpolated data
-    zi[zi < 0] = 0
-
     # Apply Gaussian filter for smoothing
     zi_smoothed = gaussian_filter(zi, sigma=10)  # Adjust the sigma value to control the smoothness
 
