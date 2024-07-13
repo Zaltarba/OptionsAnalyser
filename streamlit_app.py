@@ -37,8 +37,8 @@ def get_options_data(ticker):
         # Append the current options data to the all_options DataFrame
         all_options = pd.concat([all_options, current_options])
 
-    options_data['Time to Expiration'] = pd.to_datetime(options_data['Expiration']) - pd.Timestamp.today()
-    options_data['Time to Expiration'] = options_data['Time to Expiration'].dt.days / 365
+    all_options['Time to Expiration'] = pd.to_datetime(all_options['Expiration']) - pd.Timestamp.today()
+    all_options['Time to Expiration'] = all_options['Time to Expiration'].dt.days / 365
     
     all_options["Type"] = all_options["contractSymbol"]
     all_options["Type"] = all_options["Type"].apply(lambda x:x.split(ticker)[1][6]).map({"C":"Call", "P":"Put"})
