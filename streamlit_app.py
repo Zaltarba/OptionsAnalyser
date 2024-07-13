@@ -83,10 +83,10 @@ def compute_volatility_surface_plotly(options_data):
 if ticker != "":
     options_data = get_options_data(ticker)
     st.write("Call Volatility Surface")
-    fig_1 = compute_volatility_surface_plotly(options_data[options_data["Type"] == "Call"])
+    fig_1 = compute_volatility_surface_plotly(options_data[(options_data["Type"] == "Call") & (options_data["volume]>10)]
     st.plotly_chart(fig_1, use_container_width=True)
     st.write("Put Volatility Surface")
-    fig_2 = compute_volatility_surface_plotly(options_data[options_data["Type"] == "Put"])
+    fig_2 = compute_volatility_surface_plotly(options_data[options_data["Type"] == "Put"] & (options_data["volume]>10))
     st.plotly_chart(fig_2, use_container_width=True)
 
 else:
