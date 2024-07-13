@@ -40,24 +40,6 @@ def get_options_data(ticker):
 
 ticker = st.text_input('Enter ticker to be studied, e.g. MA,META,V,AMZN,JPM,BA', '').upper()
 
-def get_last_price(ticker):
-    # Load the ticker data
-    stock = yf.Ticker(ticker)
-    
-    # Fetch historical data for the last week with 1-minute granularity
-    # Note: 1-minute granularity might be limited to certain subscriptions or the recent data
-    data = stock.history(period='2d', interval='1m')
-    
-    # Check if data is empty
-    if data.empty:
-        st.write("No data available for the specified ticker and interval.")
-        return None
-    
-    # Get the last price from the close column
-    last_price = data['Close'].iloc[-1]
-    
-    return last_price
-
 def compute_volatility_surface_plotly(options_data):
     x = options_data['Time to Expiration']
     y = options_data['strike']
