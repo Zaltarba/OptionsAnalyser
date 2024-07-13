@@ -70,7 +70,7 @@ def compute_volatility_surface_plotly(options_data):
 
     # Apply Gaussian filter for smoothing
     zi_smoothed = gaussian_filter(zi, sigma=0.1)  # Adjust the sigma value to control the smoothness
-
+    
     # Prepare the figure
     fig = go.Figure(data=[go.Surface(x=xi, y=yi, z=zi_smoothed)])
 
@@ -93,10 +93,10 @@ def compute_volatility_surface_plotly(options_data):
 if ticker != "":
     options_data = get_options_data(ticker)
     st.write("Call Volatility Surface")
-    fig_1 = compute_volatility_surface_plotly(options_data[(options_data["Type"] == "Call") & (options_data["volume"]>10)])
+    fig_1 = compute_volatility_surface_plotly(options_data[(options_data["Type"] == "Call") & (options_data["volume"]>25)])
     st.plotly_chart(fig_1, use_container_width=True)
     st.write("Put Volatility Surface")
-    fig_2 = compute_volatility_surface_plotly(options_data[(options_data["Type"] == "Put") & (options_data["volume"]>10)  & (options_data["impliedVolatility"]>0)])
+    fig_2 = compute_volatility_surface_plotly(options_data[(options_data["Type"] == "Put") & (options_data["volume"]>25)  & (options_data["impliedVolatility"]>0)])
     st.plotly_chart(fig_2, use_container_width=True)
 
 else:
