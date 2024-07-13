@@ -28,8 +28,12 @@ def get_options_data(ticker):
     all_options["Type"] = all_options["contractSymbol"].apply(lambda x: x.split(ticker)[1][6]).map({"C": "Call", "P": "Put"})
     all_options = all_options.sort_values(by=["strike", "Time to Expiration", "Type"])
     all_options["volume"] = all_options["volume"].fillna(0)
+
+    data = stock.history(period='1w', interval='1m')
+    # Get the last price from the close column
+    last_price = data['Close'].iloc[-1]
     
-    return all_options
+    return all_options, last_price
 
 ticker = st.text_input('Enter ticker to be studied, e.g. MA,META,V,AMZN,JPM,BA', '').upper()
 
@@ -50,20 +54,6 @@ def get_last_price(ticker):
     last_price = data['Close'].iloc[-1]
     
     return last_price
-
-if ticker != "":
-    last_price = get_last_price(ticker)
-else:
-    last_price = 500
-    
-st.write(last_price)
-min_strike = int(last_price * 0.8)
-max_strike = int(last_price * 1.2)
-step = int(last_price * 0.01)
-
-min_volume = st.number_input('Set minimum volume', value=1000, step=25)
-min_strike = st.slider('Select minimum strike price', 0, int(last_price*2), value=min_strike, step=step)
-max_strike = st.slider('Select maximum strike price', 0, int(last_price*2), value=max_strike, step=step)
 
 def compute_volatility_surface_plotly(options_data):
     x = options_data['Time to Expiration']
@@ -94,7 +84,17 @@ def compute_volatility_surface_plotly(options_data):
     return fig
 
 if ticker:
-    options_data = get_options_data(ticker)
+
+    options_data, last_price = get_options_data(ticker)
+    
+    min_strike = int(last_price * 0.8)
+    max_strike = int(last_price * 1.2)
+    step = int(last_price * 0.01)
+    
+    min_volume = st.number_input('Set minimum volume', value=1000, step=25)
+    min_strike = st.slider('Select minimum strike price', 0, int(last_price*2), value=min_strike, step=step)
+    max_strike = st.slider('Select maximum strike price', 0, int(last_price*2), value=max_strike, step=step)
+
     filtered_data_calls = options_data[(options_data["Type"] == "Call") & (options_data["volume"] >= min_volume) & (options_data["strike"] >= min_strike) & (options_data["strike"] <= max_strike)]
     filtered_data_puts = options_data[(options_data["Type"] == "Put") & (options_data["volume"] >= min_volume) & (options_data["strike"] >= min_strike) & (options_data["strike"] <= max_strike)]
     
