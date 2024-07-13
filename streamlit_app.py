@@ -52,7 +52,8 @@ def get_last_price(ticker):
     return last_price
 
 try:
-    last_price = get_last_price(ticker)
+    last_price = get_last_price(str(ticker))
+    st.write(ticker)
 except:
     last_price = 1
 
