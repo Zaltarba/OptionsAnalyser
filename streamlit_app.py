@@ -39,7 +39,7 @@ def get_last_price(ticker):
     
     # Fetch historical data for the last week with 1-minute granularity
     # Note: 1-minute granularity might be limited to certain subscriptions or the recent data
-    data = stock.history(period='1w', interval='1m')
+    data = stock.history(period='2d', interval='1m')
     
     # Check if data is empty
     if data.empty:
