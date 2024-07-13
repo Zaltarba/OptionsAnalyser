@@ -5,6 +5,8 @@ import plotly.graph_objects as go
 import numpy as np 
 from scipy.interpolate import griddata
 import streamlit as st
+from scipy.interpolate import griddata
+from scipy.ndimage import gaussian_filter
 
 st.set_page_config(
     page_title="Options Analysis",
@@ -51,7 +53,10 @@ def get_options_data(ticker):
 ticker = st.text_input('Enter ticker to be studied, e.g. MA,META,V,AMZN,JPM,BA', '').upper()
 
 def compute_volatility_surface_plotly(options_data):
-
+    # Convert expiration date to 'Time to Expiration' in years
+    options_data['Time to Expiration'] = pd.to_datetime(options_data['Expiration']) - pd.Timestamp.today()
+    options_data['Time to Expiration'] = options_data['Time to Expiration'].dt.days / 365
+    
     # Prepare the grid
     x = options_data['Time to Expiration']
     y = options_data['strike']
@@ -63,8 +68,11 @@ def compute_volatility_surface_plotly(options_data):
     xi, yi = np.meshgrid(xi, yi)
     zi = griddata((x, y), z, (xi, yi), method='cubic')
 
+    # Apply Gaussian filter for smoothing
+    zi_smoothed = gaussian_filter(zi, sigma=1)  # Adjust the sigma value to control the smoothness
+
     # Prepare the figure
-    fig = go.Figure(data=[go.Surface(x=xi, y=yi, z=zi)])
+    fig = go.Figure(data=[go.Surface(x=xi, y=yi, z=zi_smoothed)])
 
     # Update layout of the plot
     fig.update_layout(
