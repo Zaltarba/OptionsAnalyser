@@ -64,7 +64,7 @@ step = int(last_price * 0.01)
 
 min_volume = st.number_input('Set minimum volume', value=1000, step=25)
 min_strike = st.slider('Select minimum strike price', 0, value=min_strike, step=step)
-max_strike = st.slider('Select maximum strike price', 0, 3000, 3000, 50)
+max_strike = st.slider('Select maximum strike price', 0, 3000, value=max_strike, step=step)
 
 def compute_volatility_surface_plotly(options_data):
     x = options_data['Time to Expiration']
