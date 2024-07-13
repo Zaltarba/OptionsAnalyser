@@ -43,11 +43,10 @@ def get_last_price(ticker):
     
     # Check if data is empty
     if data.empty:
-        print("No data available for the specified ticker and interval.")
+        st.write("No data available for the specified ticker and interval.")
         return None
     
     # Get the last price from the close column
-    st.write(data)
     last_price = data['Close'].iloc[-1]
     
     return last_price
