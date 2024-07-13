@@ -57,7 +57,7 @@ except:
     last_price = 1
 
 min_volume = st.number_input('Set minimum volume', value=1000, step=25)
-min_strike = st.slider('Select minimum strike price', 0, value=last_price, step=50)
+min_strike = st.slider('Select minimum strike price', 0, value=last_price*0.8, step=last_price*0.01)
 max_strike = st.slider('Select maximum strike price', 0, 3000, 3000, 50)
 
 def compute_volatility_surface_plotly(options_data):
