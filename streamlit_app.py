@@ -56,6 +56,7 @@ try:
 except:
     last_price = 1
 
+st.write(last_price)
 min_strike = int(last_price * 0.8)
 max_strike = int(last_price * 1.2)
 step = int(last_price * 0.01)
