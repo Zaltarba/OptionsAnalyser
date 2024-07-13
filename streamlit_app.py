@@ -3,6 +3,7 @@ import yfinance as yf
 import pandas as pd
 import plotly.graph_objects as go
 import numpy as np 
+from scipy.interpolate import griddata
 import streamlit as st
 
 st.set_page_config(
