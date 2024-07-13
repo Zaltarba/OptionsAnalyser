@@ -56,8 +56,6 @@ try:
 except:
     last_price = 1
 
-last_price = 10
-
 min_volume = st.number_input('Set minimum volume', value=1000, step=25)
 min_strike = st.slider('Select minimum strike price', 0, value=last_price, step=50)
 max_strike = st.slider('Select maximum strike price', 0, 3000, 3000, 50)
