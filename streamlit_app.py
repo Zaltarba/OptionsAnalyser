@@ -37,18 +37,19 @@ def get_options_data(ticker):
         # Append the current options data to the all_options DataFrame
         all_options = pd.concat([all_options, current_options])
 
+    options_data['Time to Expiration'] = pd.to_datetime(options_data['Expiration']) - pd.Timestamp.today()
+    options_data['Time to Expiration'] = options_data['Time to Expiration'].dt.days / 365
+    
     all_options["Type"] = all_options["contractSymbol"]
     all_options["Type"] = all_options["Type"].apply(lambda x:x.split(ticker)[1][6]).map({"C":"Call", "P":"Put"})
+    all_options = all_options.sort_values(by=["Strike, "Time to Expiration", "Type"])
     
     return all_options
 
 ticker = st.text_input('Enter ticker to be studied, e.g. MA,META,V,AMZN,JPM,BA', '').upper()
 
 def compute_volatility_surface_plotly(options_data):
-    # Convert expiration date to 'Time to Expiration' in years
-    options_data['Time to Expiration'] = pd.to_datetime(options_data['Expiration']) - pd.Timestamp.today()
-    options_data['Time to Expiration'] = options_data['Time to Expiration'].dt.days / 365
-    
+
     # Prepare the grid
     x = options_data['Time to Expiration']
     y = options_data['strike']
