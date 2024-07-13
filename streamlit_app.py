@@ -45,6 +45,34 @@ def get_options_data(ticker):
     
     return all_options, last_price
 
+def compute_volatility_surface_plotly(options_data):
+    x = options_data['Time to Expiration']
+    y = options_data['strike']
+    z = options_data['impliedVolatility']
+
+    xi = np.linspace(x.min(), x.max(), 100)
+    yi = np.linspace(min_strike, max_strike, 100)
+    xi, yi = np.meshgrid(xi, yi)
+    zi = griddata((x, y), z, (xi, yi), method='cubic')
+    zi[zi < 0] = 0
+    zi_smoothed = gaussian_filter(zi, sigma=1)
+
+    fig = go.Figure(data=[go.Surface(x=xi, y=yi, z=zi_smoothed)])
+    fig.update_layout(
+        title='Volatility Surface',
+        scene=dict(
+            xaxis_title='Time to Expiration (Years)',
+            yaxis_title='Strike Price ($)',
+            zaxis_title='Implied Volatility (%)',
+            xaxis=dict(tickformat='.2f'),
+            yaxis=dict(tickformat='$,.0f'),
+            zaxis=dict(tickformat='.3f'),
+        ),
+        autosize=True,
+        margin=dict(l=0, r=0, b=0, t=30)
+    )
+    return fig
+
 # Input area in sidebar
 st.sidebar.header("User Input Features")
 ticker = st.sidebar.text_input('Enter ticker to be studied, e.g. MA,META,V,AMZN,JPM,BA', '').upper()
