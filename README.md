@@ -1,19 +1,4 @@
-# 🎈 Blank app template
+# Is now the time to buy ?
 
-A simple Streamlit app template for you to modify!
+This tool aims to provides missing stats and decision tools from most brokers accounts available here in France and required for option trading (after all who doesn't want leverage ?)
 
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://blank-app-template.streamlit.app/)
-
-### How to run it on your own machine
-
-1. Install the requirements
-
-   ```
-   $ pip install -r requirements.txt
-   ```
-
-2. Run the app
-
-   ```
-   $ streamlit run streamlit_app.py
-   ```
