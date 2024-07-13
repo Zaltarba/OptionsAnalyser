@@ -53,7 +53,7 @@ def get_last_price(ticker):
 
 if ticker != "":
     last_price = get_last_price(ticker)
-except:
+else:
     last_price = 500
     
 st.write(last_price)
