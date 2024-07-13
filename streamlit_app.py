@@ -7,7 +7,7 @@ from scipy.interpolate import griddata
 from scipy.ndimage import gaussian_filter
 
 # Set page config for dark theme
-st.set_page_config(page_title="Options Analysis", page_icon="📈", layout="wide", theme={"base": "dark",})
+st.set_page_config(page_title="Options Analysis", page_icon="📈", layout="wide",)
 
 st.title("Is Now the Time to Buy?")
 st.markdown("""
