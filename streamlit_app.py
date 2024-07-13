@@ -32,6 +32,9 @@ def get_options_data(ticker):
         
         # Append the current options data to the all_options DataFrame
         all_options = pd.concat([all_options, current_options])
+
+    options_data["Type"] = options_data["contractSymbol"]
+    options_data["Type"] = options_data["Type"].apply(lambda x:x.split(ticker)[1][6]).map({"C":"Call", "P":"Put"})
     
     return all_options
 
