@@ -32,8 +32,9 @@ def get_options_data(ticker):
     all_options = all_options.sort_values(by=["strike", "Time to Expiration", "Type"])
     all_options["volume"] = all_options["volume"].fillna(0)
 
-    data = stock.history(period='1w', interval='1d')
+    data = stock.history(period='2w', interval='1d')
     last_price = data['Close'].iloc[-1]
+    
     return all_options, last_price
 
 # Input area in sidebar
