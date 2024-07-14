@@ -133,31 +133,30 @@ if ticker:
     expiration = st.selectbox("Expiration Date", expiration_dates)
     option_type = st.selectbox("Contract", ["Call", "Put"])
     
-    if expiration & contract:
-        # Filter options for the selected expiration date
-        available_contracts = options_data[options_data['Expiration'] == expiration]
-        # Allow user to select between Calls and Puts
-        filtered_contracts = available_contracts[available_contracts['Type'] == option_type]
-        # Display contracts for selection
-        available_strikes = filtered_contracts["strike"].unique()
-        strike = st.selectbox("Strike", available_strikes)
+    # Filter options for the selected expiration date
+    available_contracts = options_data[options_data['Expiration'] == expiration]
+    # Allow user to select between Calls and Puts
+    filtered_contracts = available_contracts[available_contracts['Type'] == option_type]
+    # Display contracts for selection
+    available_strikes = filtered_contracts["strike"].unique()
+    strike = st.selectbox("Strike", available_strikes)
 
-        select_contract = filtered_contracts[filtered_contracts["strike"] == strike]
+    select_contract = filtered_contracts[filtered_contracts["strike"] == strike]
+    
+    # Display the selected contract's details and Greeks
+    st.subheader("Selected Contract Details")
+    st.write(f"**Type:** {selected_contract['Type']}")
+    st.write(f"**Strike Price:** {selected_contract['strike']}")
+    st.write(f"**Volume:** {selected_contract['volume']}")
+    st.write(f"**Open Interest:** {selected_contract['openInterest']}")
+    st.write(f"**Implied Volatility:** {selected_contract['impliedVolatility']}")
         
-        # Display the selected contract's details and Greeks
-        st.subheader("Selected Contract Details")
-        st.write(f"**Type:** {selected_contract['Type']}")
-        st.write(f"**Strike Price:** {selected_contract['strike']}")
-        st.write(f"**Volume:** {selected_contract['volume']}")
-        st.write(f"**Open Interest:** {selected_contract['openInterest']}")
-        st.write(f"**Implied Volatility:** {selected_contract['impliedVolatility']}")
-        
-        # Assuming you have Greeks in your data
-        if 'delta' in selected_contract and 'gamma' in selected_contract:
-            st.write(f"**Delta:** {selected_contract['delta']}")
-            st.write(f"**Gamma:** {selected_contract['gamma']}")
-            st.write(f"**Theta:** {selected_contract['theta']}")
-            st.write(f"**Vega:** {selected_contract['vega']}")
+    # Assuming you have Greeks in your data
+    if 'delta' in selected_contract and 'gamma' in selected_contract:
+        st.write(f"**Delta:** {selected_contract['delta']}")
+        st.write(f"**Gamma:** {selected_contract['gamma']}")
+        st.write(f"**Theta:** {selected_contract['theta']}")
+        st.write(f"**Vega:** {selected_contract['vega']}")
 
     st.header("Market Sentiment")
     st.write("We use here the Put Call Ratio metric. Check out my blog [post](https://zaltarba.github.io/blog/AboutMarketSentiment/) the known more about it")
