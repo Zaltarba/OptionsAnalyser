@@ -37,7 +37,7 @@ def plot_stock(ticker):
                                          high=data['High'],
                                          low=data['Low'],
                                          close=data['Close'])])
-    fig.update_layout(title=f'1 Year Chart for {ticker}',
+    fig.update_layout(title='',
                       xaxis_title='Date',
                       yaxis_title='Price (USD)',
                       xaxis_rangeslider_visible=False)
@@ -215,9 +215,11 @@ def compute_volatility_surface_plotly(options_data, current_price=1):
 ticker = st.text_input('Enter ticker to be studied, e.g. MA,META,V,AMZN,JPM,BA', '').upper()
 
 if ticker:
-    candle_chart = plot_stock(ticker)
-    st.plotly_chart(candle_chart, use_container_width=True)
-    options_data, last_price = get_options_data(ticker)
+    col1, col2, col3 = st.columns([0.2, 0.6, 0.2])
+    with col2:
+        candle_chart = plot_stock(ticker)
+        st.plotly_chart(candle_chart, use_container_width=True)
+        options_data, last_price = get_options_data(ticker)
     # Create tabs
     tab1, tab2, tab3, tab4 = st.tabs(["Market Sentiment", "Greeks", "Volatility Surface", "Additional Info"])
     # Tab 1: Market Sentiment
