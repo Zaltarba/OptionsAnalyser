@@ -47,7 +47,7 @@ def get_options_data(ticker):
 
 def compute_volatility_surface_plotly(options_data, current_price=1):
     x = options_data['Time to Expiration']
-    y = np.log(options_data['strike'] / current_price)
+    y = options_data['strike'] / current_price
     z = options_data['impliedVolatility']
 
     xi = np.linspace(x.min(), x.max(), 100)
