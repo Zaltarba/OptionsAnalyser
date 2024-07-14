@@ -78,7 +78,6 @@ st.sidebar.header("User Input Features")
 ticker = st.sidebar.text_input('Enter ticker to be studied, e.g. MA,META,V,AMZN,JPM,BA', '').upper()
 
 if ticker:
-    st.write("Required Parameters for computation")
     min_volume = st.sidebar.number_input('Set minimum volume', value=1000, step=25)
     options_data, last_price = get_options_data(ticker)
     min_strike = int(last_price * 0.8)
@@ -88,9 +87,9 @@ if ticker:
     max_strike = st.sidebar.slider('Select maximum strike price', 0, int(last_price*2), value=max_strike, step=step)
     filtered_data_calls = options_data[(options_data["Type"] == "Call") & (options_data["volume"] >= min_volume) & (options_data["strike"] >= min_strike) & (options_data["strike"] <= max_strike)]
     filtered_data_puts = options_data[(options_data["Type"] == "Put") & (options_data["volume"] >= min_volume) & (options_data["strike"] >= min_strike) & (options_data["strike"] <= max_strike)]
-    # Create three columns, where col_spacer is just a minimal-width spacer
-    col1, col_spacer, col2 = st.columns([1, 0.1, 1])
     
+    # Create three columns, where col_spacer is just a minimal-width spacer
+    col1, col_spacer, col2 = st.columns([1, 0.2, 1])
     with col1:
         st.subheader("Call Volatility Surface")
         if not filtered_data_calls.empty:
