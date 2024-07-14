@@ -255,24 +255,37 @@ if ticker:
     tab1, tab2, tab3, tab4 = st.tabs(["Market Sentiment", "Greeks", "Volatility Surface", "Key Stats"])
     # Tab 1: Market Sentiment
     with tab1:
+        col1, col2, col3 = st.columns([1, 3, 1])
+        with col2:
+            
+            st.write("We use here the Put Call Ratio metric. Check out my blog [post](https://zaltarba.github.io/blog/AboutMarketSentiment/) to know more about it.")
+            call_put_ratio, total_calls, total_puts = calculate_call_put_ratio(options_data)
         
-        st.write("We use here the Put Call Ratio metric. Check out my blog [post](https://zaltarba.github.io/blog/AboutMarketSentiment/) the known more about it")
-    
-        call_put_ratio, total_calls, total_puts = calculate_call_put_ratio(options_data)
-        # Display using custom HTML/CSS
-        ratio_html = f"""
-        <div style="font-size: 16px; font-weight: bold; color: {'green' if call_put_ratio > 1 else 'red'};">
-            Call-Put Ratio: {call_put_ratio:.2f}
-            <div style="font-size: 12px; color: gray;">
-                Calls: {total_calls}, Puts: {total_puts}
+            # Determine market sentiment based on the call-put ratio
+            if call_put_ratio > 1.2:
+                sentiment = "Bullish"
+                sentiment_color = "green"
+            elif call_put_ratio < 0.8:
+                sentiment = "Bearish"
+                sentiment_color = "red"
+            else:
+                sentiment = "Neutral"
+                sentiment_color = "gray"
+        
+            # Display using custom HTML/CSS
+            ratio_html = f"""
+            <div style="font-size: 16px; font-weight: bold; color: {sentiment_color};">
+                Call-Put Ratio: {call_put_ratio:.2f} - Market is {sentiment}
+                <div style="font-size: 12px; color: gray;">
+                    Calls: {total_calls}, Puts: {total_puts}
+                </div>
             </div>
-        </div>
-        """
-        st.markdown(ratio_html, unsafe_allow_html=True)
+            """
+            st.markdown(ratio_html, unsafe_allow_html=True)
 
-        monthly_ratios = calculate_monthly_call_put_ratios(options_data)
-        call_put_ratio_fig = plot_call_put_ratio(monthly_ratios)
-        st.plotly_chart(call_put_ratio_fig, use_container_width=True)
+            monthly_ratios = calculate_monthly_call_put_ratios(options_data)
+            call_put_ratio_fig = plot_call_put_ratio(monthly_ratios)
+            st.plotly_chart(call_put_ratio_fig, use_container_width=True)
 
     # Tab 2: Selected Contract Details
     with tab2:
