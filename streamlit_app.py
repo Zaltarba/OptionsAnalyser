@@ -133,9 +133,9 @@ if ticker:
         # Determine color based on the ratio value
         delta_color = "normal" if call_put_ratio > 1 else "inverse"  # 'normal': green for positive, red for negative; 'inverse': opposite
         st.metric(label="Call-Put Ratio", value=f"{call_put_ratio:.2f}", delta=f"Calls: {total_calls}, Puts: {total_puts}", delta_color=delta_color)
-    with col2:
+    with col_spacer:
         st.write("")
-    with col3:
+    with col2:
         monthly_ratios = calculate_monthly_call_put_ratios(options_data)
         call_put_ratio_fig = plot_call_put_ratio(monthly_ratios)
         st.plotly_chart(call_put_ratio_fig, use_container_width=True)
