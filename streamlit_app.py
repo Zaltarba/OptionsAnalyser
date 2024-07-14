@@ -45,21 +45,24 @@ def plot_stock(ticker):
 
 def get_financial_stats(ticker):
     stock = yf.Ticker(ticker)
-    stats = {
+    stats_1 = {
         'PE Ratio': stock.info.get('trailingPE', 'N/A'),
         'Price/Sales (ttm)': stock.info.get('priceToSalesTrailing12Months', 'N/A'),
         'EBITDA Margin': stock.info.get('ebitdaMargins', 'N/A'),
-        'Market Cap': stock.info.get('marketCap', 'N/A'),
-        'Enterprise Value': stock.info.get('enterpriseValue', 'N/A'),
         'Profit Margins': stock.info.get('profitMargins', 'N/A'),
         'Return on Assets': stock.info.get('returnOnAssets', 'N/A'),
         'Return on Equity': stock.info.get('returnOnEquity', 'N/A'),
         'Revenue Per Share': stock.info.get('revenuePerShare', 'N/A'),
         'Quarterly Revenue Growth': stock.info.get('revenueGrowth', 'N/A'),
         'Gross Profits': stock.info.get('grossProfits', 'N/A'),
+    }
+    stats_2 = {
+        'Market Cap': stock.info.get('marketCap', 'N/A'),
+        'Enterprise Value': stock.info.get('enterpriseValue', 'N/A'),
         'Operating Cash Flow': stock.info.get('operatingCashflow', 'N/A')
     }
-    return pd.DataFrame([stats])
+    
+    return pd.DataFrame([stats_1]), pd.DataFrame([stats_2])
 
 def get_options_data(ticker):
     stock = yf.Ticker(ticker)
@@ -348,8 +351,9 @@ if ticker:
     # Tab 4: Key stats
     with tab4:
         st.subheader("Financial Key Stats")
-        financial_stats_df = get_financial_stats(ticker)
-        st.dataframe(financial_stats_df, hide_index=True)
+        financial_stats_1, financial_stats_2 = get_financial_stats(ticker)
+        st.dataframe(financial_stats_1, hide_index=True)
+        st.dataframe(financial_stats_2, hide_index=True)
 
 else:
     st.write("Please use the interactive window on the left to provide the ticker and some required values.")
