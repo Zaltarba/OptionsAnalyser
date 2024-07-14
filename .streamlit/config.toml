@@ -3,7 +3,7 @@
 base="dark"
 
 # Primary color: Used for primary buttons and active states
-primaryColor="#2ca02c"
+primaryColor="#1f77b4"  # A shade of blue commonly associated with trust and professionalism
 
 # Background color: Used for the main background
 backgroundColor="#0e1117"
