@@ -6,6 +6,7 @@ import numpy as np
 from scipy.interpolate import griddata
 from scipy.ndimage import gaussian_filter
 import plotly.express as px
+import scipy.stats as si
 
 # Set page config for dark theme
 st.set_page_config(page_title="Options Analysis", page_icon="📈", layout="wide",)
@@ -45,6 +46,65 @@ def get_options_data(ticker):
         last_price = data['Close'].iloc[-1]
     
     return all_options, last_price
+
+def compute_greeks(S, K, T, r, sigma, option_type="call"):
+    """
+    Computes the Greeks for an option using the Black-Scholes model.
+    
+    Parameters:
+    S : float : Current stock price
+    K : float : Strike price
+    T : float : Time to expiration in years
+    r : float : Risk-free interest rate
+    sigma : float : Implied volatility
+    option_type : str : Type of the option ('call' or 'put')
+    
+    Returns:
+    dict : A dictionary containing Delta, Gamma, Theta, Vega, and Rho
+    """
+    d1 = (np.log(S / K) + (r + 0.5 * sigma ** 2) * T) / (sigma * np.sqrt(T))
+    d2 = d1 - sigma * np.sqrt(T)
+    
+    if option_type == "call":
+        delta = si.norm.cdf(d1, 0.0, 1.0)
+        theta = (-S * si.norm.pdf(d1, 0.0, 1.0) * sigma / (2 * np.sqrt(T)) - r * K * np.exp(-r * T) * si.norm.cdf(d2, 0.0, 1.0)) / 365
+        rho = K * T * np.exp(-r * T) * si.norm.cdf(d2, 0.0, 1.0) / 100
+    elif option_type == "put":
+        delta = -si.norm.cdf(-d1, 0.0, 1.0)
+        theta = (-S * si.norm.pdf(d1, 0.0, 1.0) * sigma / (2 * np.sqrt(T)) + r * K * np.exp(-r * T) * si.norm.cdf(-d2, 0.0, 1.0)) / 365
+        rho = -K * T * np.exp(-r * T) * si.norm.cdf(-d2, 0.0, 1.0) / 100
+    
+    gamma = si.norm.pdf(d1, 0.0, 1.0) / (S * sigma * np.sqrt(T))
+    vega = S * si.norm.pdf(d1, 0.0, 1.0) * np.sqrt(T) / 100
+    
+    return {"delta": delta, "gamma": gamma, "theta": theta, "vega": vega, "rho": rho}
+
+def add_greeks_to_options_data(options_data, stock_price, risk_free_rate=0.01):
+    """
+    Adds Greek metrics to the options DataFrame.
+    
+    Parameters:
+    options_data : DataFrame : The options data DataFrame
+    stock_price : float : Current stock price
+    risk_free_rate : float : Risk-free interest rate (default is 1%)
+    
+    Returns:
+    DataFrame : The options data DataFrame with additional Greek metrics
+    """
+    greeks = []
+    for index, row in options_data.iterrows():
+        greeks.append(compute_greeks(
+            S=stock_price,
+            K=row['strike'],
+            T=row['Time to Expiration'],
+            r=risk_free_rate,
+            sigma=row['impliedVolatility'],
+            option_type=row['Type'].lower()
+        ))
+    
+    greeks_df = pd.DataFrame(greeks)
+    options_data = pd.concat([options_data.reset_index(drop=True), greeks_df], axis=1)
+    return options_data
 
 def calculate_call_put_ratio(options_data):
     total_calls = options_data[options_data['Type'] == 'Call']['volume'].sum()
@@ -115,9 +175,12 @@ st.sidebar.header("User Input Features")
 ticker = st.sidebar.text_input('Enter ticker to be studied, e.g. MA,META,V,AMZN,JPM,BA', '').upper()
 
 if ticker:
+    sidebar.subheader("Parameters for the Greeks")
+    st.sidebar.number_input('Set risk free rate', value=0.04, step=0.001)
+    options_data, last_price = get_options_data(ticker)
+    options_data = add_greeks_to_options_data(options_data, last_price, risk_free_rate)
     st.sidebar.subheader("Parameters for the Volatility Surfaces")
     min_volume = st.sidebar.number_input('Set minimum volume', value=1000, step=25)
-    options_data, last_price = get_options_data(ticker)
     min_strike = int(last_price * 0.8)
     max_strike = int(last_price * 1.2)
     step = int(last_price * 0.01)
@@ -145,18 +208,15 @@ if ticker:
     
     # Display the selected contract's details and Greeks
     st.subheader("Selected Contract Details")
-    st.write(f"**Type:** {selected_contract['Type']}")
-    st.write(f"**Strike Price:** {selected_contract['strike']}")
     st.write(f"**Volume:** {selected_contract['volume']}")
     st.write(f"**Open Interest:** {selected_contract['openInterest']}")
     st.write(f"**Implied Volatility:** {selected_contract['impliedVolatility']}")
-        
-    # Assuming you have Greeks in your data
-    if 'delta' in selected_contract and 'gamma' in selected_contract:
-        st.write(f"**Delta:** {selected_contract['delta']}")
-        st.write(f"**Gamma:** {selected_contract['gamma']}")
-        st.write(f"**Theta:** {selected_contract['theta']}")
-        st.write(f"**Vega:** {selected_contract['vega']}")
+    # Display Greeks
+    st.write(f"**Delta:** {selected_contract['delta']}")
+    st.write(f"**Gamma:** {selected_contract['gamma']}")
+    st.write(f"**Theta:** {selected_contract['theta']}")
+    st.write(f"**Vega:** {selected_contract['vega']}")
+    st.write(f"**Rho:** {selected_contract['rho']}")
 
     st.header("Market Sentiment")
     st.write("We use here the Put Call Ratio metric. Check out my blog [post](https://zaltarba.github.io/blog/AboutMarketSentiment/) the known more about it")
