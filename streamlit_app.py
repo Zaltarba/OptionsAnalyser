@@ -19,24 +19,28 @@ All stock data are here fetched from Yahoo Finance, this tool aims to provide a 
 
 # Function to fetch and plot data
 def plot_stock(ticker):
-    data = yf.download(ticker, period="1y")
-    fig = go.Figure(
-        data=[
-            go.Candlestick(
-                x=data.index,
-                open=data['Open'],
-                high=data['High'],
-                low=data['Low'],
-                close=data['Close']
-            )
-        ]
-    )
-    fig.update_layout(
-        title=f'1 Year Chart for {ticker}',
-        xaxis_title='Date',
-        yaxis_title='Price (USD)',
-        xaxis_rangeslider_visible=False
-        )
+    stock = yf.Ticker(ticker)
+
+    try:
+        # Get historical data for the last year
+        data = stock.history(period="1y")
+        if data.empty:
+            st.error("No data fetched for the ticker. Please check the ticker symbol.")
+            return None
+    except Exception as e:
+        st.error(f"An error occurred while fetching the data: {e}")
+        return None
+
+    # Creating the candlestick chart
+    fig = go.Figure(data=[go.Candlestick(x=data.index,
+                                         open=data['Open'],
+                                         high=data['High'],
+                                         low=data['Low'],
+                                         close=data['Close'])])
+    fig.update_layout(title=f'1 Year Chart for {ticker}',
+                      xaxis_title='Date',
+                      yaxis_title='Price (USD)',
+                      xaxis_rangeslider_visible=False)
     return fig
 
 def get_options_data(ticker):
