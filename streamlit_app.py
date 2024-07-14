@@ -15,7 +15,7 @@ If you're looking for Greeks, volatility surfaces, and other useful metrics not 
 All stock data are here fetched from Yahoo Finance, this aims to provide a clear and concise interface.
 """)
 
-def get_options_data(ticker):
+def get_options_data(ticker, current_price=1):
     stock = yf.Ticker(ticker)
     expirations = stock.options
     all_options = pd.DataFrame()
@@ -47,7 +47,7 @@ def get_options_data(ticker):
 
 def compute_volatility_surface_plotly(options_data):
     x = options_data['Time to Expiration']
-    y = options_data['strike']
+    y = np.log(options_data['strike'] / current_price)
     z = options_data['impliedVolatility']
 
     xi = np.linspace(x.min(), x.max(), 100)
@@ -93,7 +93,7 @@ if ticker:
     with col1:
         st.subheader("Call Volatility Surface")
         if not filtered_data_calls.empty:
-            fig_1 = compute_volatility_surface_plotly(filtered_data_calls)
+            fig_1 = compute_volatility_surface_plotly(filtered_data_calls, last_price)
             st.plotly_chart(fig_1, use_container_width=True)
     
     with col_spacer:
@@ -102,7 +102,7 @@ if ticker:
     with col2:
         st.subheader("Put Volatility Surface")
         if not filtered_data_puts.empty:
-            fig_2 = compute_volatility_surface_plotly(filtered_data_puts)
+            fig_2 = compute_volatility_surface_plotly(filtered_data_puts, last_price)
             st.plotly_chart(fig_2, use_container_width=True)
 
 else:
