@@ -112,8 +112,8 @@ if ticker:
             st.plotly_chart(fig_2, use_container_width=True)
         else:
             st.write("No data available for puts within the selected range.")
-    else:
-        st.sidebar.write("No options data available.")
+else:
+    st.sidebar.write("No options data available.")
 
 # Hide streamlit branding
 st.markdown("""
