@@ -128,26 +128,22 @@ if ticker:
 
     st.header("Market Sentiment")
     st.write("We use here the Put Call Ratio metric. Check out my blog [post](https://zaltarba.github.io/blog/AboutMarketSentiment/) the known more about it")
-    col1, col_spacer, col2 = st.columns([1, 0.2, 2])
-    with col1:
-        call_put_ratio, total_calls, total_puts = calculate_call_put_ratio(options_data)
-        # Normalize the Call-Put Ratio for progress display (assuming you want to scale it for visualization)
-        # Example normalization: ratio value of 2 as 100% in progress bar
-        max_expected_ratio = 2
-        progress_value = min(call_put_ratio / max_expected_ratio, 1)
-        
-        # Displaying the metric and the dynamic progress bar
-        st.metric(label="Call-Put Ratio", value=f"{call_put_ratio:.2f}",
-                  delta=f"Calls: {total_calls}, Puts: {total_puts}", delta_color=delta_color)
-        st.progress(progress_value)
 
-    
-    with col_spacer:
-        st.write("")
-    with col2:
-        monthly_ratios = calculate_monthly_call_put_ratios(options_data)
-        call_put_ratio_fig = plot_call_put_ratio(monthly_ratios)
-        st.plotly_chart(call_put_ratio_fig, use_container_width=True)
+    call_put_ratio, total_calls, total_puts = calculate_call_put_ratio(options_data)
+    # Display using custom HTML/CSS
+    ratio_html = f"""
+    <div style="font-size: 16px; font-weight: bold; color: {'green' if call_put_ratio > 1 else 'red'};">
+        Call-Put Ratio: {call_put_ratio:.2f}
+        <div style="font-size: 12px; color: gray;">
+            Calls: {total_calls}, Puts: {total_puts}
+        </div>
+    </div>
+    """
+    st.markdown(ratio_html, unsafe_allow_html=True)
+
+    monthly_ratios = calculate_monthly_call_put_ratios(options_data)
+    call_put_ratio_fig = plot_call_put_ratio(monthly_ratios)
+    st.plotly_chart(call_put_ratio_fig, use_container_width=True)
         
     # Create three columns, where col_spacer is just a minimal-width spacer
     st.header("Volatility Surface")
