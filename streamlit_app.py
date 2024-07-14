@@ -175,9 +175,9 @@ st.sidebar.header("User Input Features")
 ticker = st.sidebar.text_input('Enter ticker to be studied, e.g. MA,META,V,AMZN,JPM,BA', '').upper()
 
 if ticker:
-    st.sidebar.subheader("Parameters for the Greeks")
-    st.sidebar.number_input('Set risk free rate', value=0.04, step=0.001)
     options_data, last_price = get_options_data(ticker)
+    st.sidebar.subheader("Parameters for the Greeks")
+    risk_free_rate = st.sidebar.number_input('Set risk free rate', value=0.04, step=0.001)
     options_data = add_greeks_to_options_data(options_data, last_price, risk_free_rate)
     st.sidebar.subheader("Parameters for the Volatility Surfaces")
     min_volume = st.sidebar.number_input('Set minimum volume', value=1000, step=25)
