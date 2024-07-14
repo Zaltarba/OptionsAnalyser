@@ -311,7 +311,7 @@ if ticker:
                 strike = st.selectbox("Strike Price", strikes)
                 
             selected_contract = available_contracts[available_contracts['strike'] == strike].iloc[0]
-            
+            st.write("")
             if not selected_contract.empty:
                 
                 # Create a DataFrame from the selected contract details
