@@ -332,7 +332,7 @@ if ticker:
         
                 # Display the DataFrame
                 # Use columns to center the dataframe
-                col1, col2, col3 = st.columns([1,2,1])
+                col1, col2, col3 = st.columns([1,3,1])
                 with col2:  # Use the middle column to display the dataframe
                     st.dataframe(contract_details_df.set_index('Metric').T, hide_index=True)
             else:
