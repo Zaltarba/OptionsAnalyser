@@ -374,7 +374,7 @@ if ticker:
         st.dataframe(
             financial_stats_2, 
             column_config={
-                col:st.column_config.NumberColumn(col, format=”$ %d") for col in financial_stats_2.columns
+                col:st.column_config.NumberColumn(col, format="$ %d") for col in financial_stats_2.columns
                 }, 
             hide_index=True
         )
