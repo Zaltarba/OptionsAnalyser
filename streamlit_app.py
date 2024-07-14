@@ -216,8 +216,7 @@ if ticker:
     # Tab 2: Selected Contract Details
     with tab2:
         st.subheader("Get Greeks")
-
-        st.sidebar.subheader("Greeks Parameters")
+        st.subheader("Greeks Parameters")
         risk_free_rate = st.number_input('Set risk free rate', value=0.04, step=0.001)
         options_data_with_greeks = add_greeks_to_options_data(options_data, last_price, risk_free_rate)
         options_data_with_greeks = calculate_leverage(options_data, last_price)
