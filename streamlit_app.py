@@ -224,16 +224,23 @@ if ticker:
     
     # Display the selected contract's details and Greeks
     st.subheader("Selected Contract Details")
-    st.write(f"**Volume:** {selected_contract['volume'].iloc[0]}")
-    st.write(f"**Open Interest:** {selected_contract['openInterest'].iloc[0]}")
-    st.write(f"**Implied Volatility:** {selected_contract['impliedVolatility'].iloc[0]}")
-    # Display Greeks
-    st.write(f"**Delta:** {selected_contract['delta'].iloc[0]}")
-    st.write(f"**Gamma:** {selected_contract['gamma'].iloc[0]}")
-    st.write(f"**Theta:** {selected_contract['theta'].iloc[0]}")
-    st.write(f"**Vega:** {selected_contract['vega'].iloc[0]}")
-    st.write(f"**Rho:** {selected_contract['rho'].iloc[0]}")
-    st.write(f"**Leverage:** {round(selected_contract['Leverage'].iloc[0], 1)}")
+    # Create a DataFrame for a neat tabular presentation
+    contract_greeks = {
+        "Metric": ["Volume", "Open Interest", "Implied Volatility", "Delta", "Gamma", "Theta", "Vega", "Rho", "Leverage"],
+        "Value": [
+            selected_contract['volume'].iloc[0],
+            selected_contract['openInterest'].iloc[0],
+            selected_contract['impliedVolatility'].iloc[0],
+            selected_contract['delta'].iloc[0],
+            selected_contract['gamma'].iloc[0],
+            selected_contract['theta'].iloc[0],
+            selected_contract['vega'].iloc[0],
+            selected_contract['rho'].iloc[0],
+            round(selected_contract['Leverage'].iloc[0], 1)
+        ]
+    }
+    contract_greeks = pd.DataFrame(contract_greeks)
+    st.table(contract_greeks)
 
     st.header("Market Sentiment")
     st.write("We use here the Put Call Ratio metric. Check out my blog [post](https://zaltarba.github.io/blog/AboutMarketSentiment/) the known more about it")
