@@ -58,7 +58,7 @@ def compute_volatility_surface_plotly(options_data, current_price=1):
 
     fig = go.Figure(data=[go.Surface(x=xi, y=yi, z=zi_smoothed)])
     fig.update_layout(
-        title='Volatility Surface',
+        title='',
         scene=dict(
             xaxis_title='Time to Expiration (Years)',
             yaxis_title='Log Strike Price / Current Price',
