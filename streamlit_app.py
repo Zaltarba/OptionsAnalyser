@@ -175,7 +175,7 @@ st.sidebar.header("User Input Features")
 ticker = st.sidebar.text_input('Enter ticker to be studied, e.g. MA,META,V,AMZN,JPM,BA', '').upper()
 
 if ticker:
-    sidebar.subheader("Parameters for the Greeks")
+    st.sidebar.subheader("Parameters for the Greeks")
     st.sidebar.number_input('Set risk free rate', value=0.04, step=0.001)
     options_data, last_price = get_options_data(ticker)
     options_data = add_greeks_to_options_data(options_data, last_price, risk_free_rate)
@@ -208,15 +208,15 @@ if ticker:
     
     # Display the selected contract's details and Greeks
     st.subheader("Selected Contract Details")
-    st.write(f"**Volume:** {selected_contract['volume']}")
-    st.write(f"**Open Interest:** {selected_contract['openInterest']}")
-    st.write(f"**Implied Volatility:** {selected_contract['impliedVolatility']}")
+    st.write(f"**Volume:** {selected_contract['volume'].iloc[0]}")
+    st.write(f"**Open Interest:** {selected_contract['openInterest'].iloc[0]}")
+    st.write(f"**Implied Volatility:** {selected_contract['impliedVolatility'].iloc[0]}")
     # Display Greeks
-    st.write(f"**Delta:** {selected_contract['delta']}")
-    st.write(f"**Gamma:** {selected_contract['gamma']}")
-    st.write(f"**Theta:** {selected_contract['theta']}")
-    st.write(f"**Vega:** {selected_contract['vega']}")
-    st.write(f"**Rho:** {selected_contract['rho']}")
+    st.write(f"**Delta:** {selected_contract['delta'].iloc[0]}")
+    st.write(f"**Gamma:** {selected_contract['gamma'].iloc[0]}")
+    st.write(f"**Theta:** {selected_contract['theta'].iloc[0]}")
+    st.write(f"**Vega:** {selected_contract['vega'].iloc[0]}")
+    st.write(f"**Rho:** {selected_contract['rho'].iloc[0]}")
 
     st.header("Market Sentiment")
     st.write("We use here the Put Call Ratio metric. Check out my blog [post](https://zaltarba.github.io/blog/AboutMarketSentiment/) the known more about it")
