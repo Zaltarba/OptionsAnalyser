@@ -188,6 +188,8 @@ def compute_volatility_surface_plotly(options_data, current_price=1):
 # Input area in sidebar
 st.sidebar.header("User Input Features")
 ticker = st.sidebar.text_input('Enter ticker to be studied, e.g. MA,META,V,AMZN,JPM,BA', '').upper()
+# Create tabs
+tab1, tab2, tab3, tab4 = st.tabs(["Selected Contract", "Market Sentiment", "Volatility Surface", "Additional Info"])
 
 if ticker:
     options_data, last_price = get_options_data(ticker)
@@ -205,76 +207,55 @@ if ticker:
     filtered_data_calls = options_data[(options_data["Type"] == "Call") & (options_data["volume"] >= min_volume) & (options_data["strike"] >= min_strike) & (options_data["strike"] <= max_strike)]
     filtered_data_puts = options_data[(options_data["Type"] == "Put") & (options_data["volume"] >= min_volume) & (options_data["strike"] >= min_strike) & (options_data["strike"] <= max_strike)]
 
-    st.header("Asking for Greeks ?")
-    st.write("Please select a contract")
-    # Assume 'options_data' is your DataFrame with all the options contracts
-    expiration_dates = sorted(options_data['Expiration'].unique())
-    expiration = st.selectbox("Expiration Date", expiration_dates)
-    option_type = st.selectbox("Contract", ["Call", "Put"])
-    
-    # Filter options for the selected expiration date
-    available_contracts = options_data[options_data['Expiration'] == expiration]
-    # Allow user to select between Calls and Puts
-    filtered_contracts = available_contracts[available_contracts['Type'] == option_type]
-    # Display contracts for selection
-    available_strikes = filtered_contracts["strike"].unique()
-    strike = st.selectbox("Strike", available_strikes)
-
-    selected_contract = filtered_contracts[filtered_contracts["strike"] == strike]
-    
-    # Display the selected contract's details and Greeks
-    st.subheader("Selected Contract Details")
-    # Using markdown to format as a list with bold headings
-    st.markdown(f"""
-    - **Volume:** {selected_contract['volume'].iloc[0]}
-    - **Open Interest:** {selected_contract['openInterest'].iloc[0]}
-    - **Implied Volatility:** {selected_contract['impliedVolatility'].iloc[0]}
-    - **Delta:** {selected_contract['delta'].iloc[0]}
-    - **Gamma:** {selected_contract['gamma'].iloc[0]}
-    - **Theta:** {selected_contract['theta'].iloc[0]}
-    - **Vega:** {selected_contract['vega'].iloc[0]}
-    - **Rho:** {selected_contract['rho'].iloc[0]}
-    - **Leverage:** {round(selected_contract['Leverage'].iloc[0], 1)}
-    """, unsafe_allow_html=True)
-
-
-    st.header("Market Sentiment")
-    st.write("We use here the Put Call Ratio metric. Check out my blog [post](https://zaltarba.github.io/blog/AboutMarketSentiment/) the known more about it")
-
-    call_put_ratio, total_calls, total_puts = calculate_call_put_ratio(options_data)
-    # Display using custom HTML/CSS
-    ratio_html = f"""
-    <div style="font-size: 16px; font-weight: bold; color: {'green' if call_put_ratio > 1 else 'red'};">
-        Call-Put Ratio: {call_put_ratio:.2f}
-        <div style="font-size: 12px; color: gray;">
-            Calls: {total_calls}, Puts: {total_puts}
-        </div>
-    </div>
-    """
-    st.markdown(ratio_html, unsafe_allow_html=True)
-
-    monthly_ratios = calculate_monthly_call_put_ratios(options_data)
-    call_put_ratio_fig = plot_call_put_ratio(monthly_ratios)
-    st.plotly_chart(call_put_ratio_fig, use_container_width=True)
+    # Tab 1: Selected Contract Details
+    with tab1:
+        st.subheader("Selected Contract Details")
+        # Assume options_data is already populated with required data
+        expiration_dates = sorted(options_data['Expiration'].unique())
+        expiration = st.selectbox("Expiration Date", expiration_dates)
+        option_type = st.selectbox("Contract Type", ["Call", "Put"])
+        available_contracts = options_data[(options_data['Expiration'] == expiration) & (options_data['Type'] == option_type)]
+        strike = st.selectbox("Strike Price", sorted(available_contracts['strike'].unique()))
+        selected_contract = available_contracts[available_contracts['strike'] == strike].iloc[0]
         
-    # Create three columns, where col_spacer is just a minimal-width spacer
-    st.header("Volatility Surface")
-    st.write("Feel free to hidden the sidebar on the left for a better visibility")
-    col1, col_spacer, col2 = st.columns([1, 0.2, 1])
-    with col1:
-        st.subheader("Call Volatility Surface")
-        if not filtered_data_calls.empty:
-            fig_1 = compute_volatility_surface_plotly(filtered_data_calls, last_price)
-            st.plotly_chart(fig_1, use_container_width=True)
-    
-    with col_spacer:
-        st.write("")  # Spacer column
-    
-    with col2:
-        st.subheader("Put Volatility Surface")
-        if not filtered_data_puts.empty:
-            fig_2 = compute_volatility_surface_plotly(filtered_data_puts, last_price)
-            st.plotly_chart(fig_2, use_container_width=True)
+        st.write(f"**Volume:** {selected_contract['volume']}")
+        st.write(f"**Open Interest:** {selected_contract['openInterest']}")
+        st.write(f"**Implied Volatility:** {selected_contract['impliedVolatility']}")
+        st.write(f"**Delta:** {selected_contract['delta']}")
+        st.write(f"**Gamma:** {selected_contract['gamma']}")
+        st.write(f"**Theta:** {selected_contract['theta']}")
+        st.write(f"**Vega:** {selected_contract['vega']}")
+        st.write(f"**Rho:** {selected_contract['rho']}")
+        st.write(f"**Leverage:** {round(selected_contract['Leverage'], 1)}")
+
+    # Tab 2: Market Sentiment
+    with tab2:
+        st.header("Market Sentiment")
+        call_put_ratio, total_calls, total_puts = calculate_call_put_ratio(options_data)
+        st.write(f"**Call-Put Ratio:** {call_put_ratio:.2f} (Calls: {total_calls}, Puts: {total_puts})")
+
+        monthly_ratios = calculate_monthly_call_put_ratios(options_data)
+        call_put_ratio_fig = plot_call_put_ratio(monthly_ratios)
+        st.plotly_chart(call_put_ratio_fig, use_container_width=True)
+
+    # Tab 3: Volatility Surface
+    with tab3:
+        st.header("Volatility Surface")
+        col1, col2 = st.columns(2)
+        with col1:
+            st.subheader("Call Volatility Surface")
+            if not filtered_data_calls.empty:
+                fig_1 = compute_volatility_surface_plotly(filtered_data_calls, last_price)
+                st.plotly_chart(fig_1, use_container_width=True)
+        with col2:
+            st.subheader("Put Volatility Surface")
+            if not filtered_data_puts.empty:
+                fig_2 = compute_volatility_surface_plotly(filtered_data_puts, last_price)
+                st.plotly_chart(fig_2, use_container_width=True)
+
+    # Tab 4: Additional Info
+    with tab4:
+        st.write("This section can contain any additional information, instructions, or analytics you might want to share.")
 
 else:
     st.write("Please use the interactive window on the left to provide the ticker and some required values.")
