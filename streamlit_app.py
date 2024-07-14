@@ -354,6 +354,10 @@ if ticker:
         df_html = financial_stats_df.to_html(index=False, classes="table table-striped", border=0)
         styled_html = f"""
         <style>
+            .financial-table-container {{
+                margin: 20px;
+                overflow-x: auto;  # Useful for responsive tables on small screens
+            }}
             .table {{
                 width: 100%;
                 margin-bottom: 1rem;
@@ -372,7 +376,9 @@ if ticker:
                 border-bottom: 2px solid #dee2e6;
             }}
         </style>
-        {df_html}
+        <div class="financial-table-container">
+            {df_html}
+        </div>
         """
         st.markdown(styled_html, unsafe_allow_html=True)
 
