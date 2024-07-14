@@ -331,7 +331,10 @@ if ticker:
                 })
         
                 # Display the DataFrame
-                st.dataframe(contract_details_df.set_index('Metric').T, hide_index=True)
+                # Use columns to center the dataframe
+                col1, col2, col3 = st.columns([1,2,1])
+                with col2:  # Use the middle column to display the dataframe
+                    st.dataframe(contract_details_df.set_index('Metric').T, hide_index=True)
             else:
                 st.write("No contract details available for the selected type and date.")
 
