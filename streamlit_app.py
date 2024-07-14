@@ -238,16 +238,6 @@ ticker = st.text_input('Enter ticker to be studied, e.g. MA,META,V,AMZN,JPM,BA',
 if ticker:
     col1, col2, col3 = st.columns([0.2, 0.6, 0.2])
     with col2:
-        # Using Markdown with inline styles for centering text
-        st.markdown("""
-            <style>
-            .big-font {
-                font-size:30px; 
-                text-align:center;
-            }
-            </style>
-            <p class="big-font">Stock Price Evolution</p>
-            """, unsafe_allow_html=True)
         candle_chart = plot_stock(ticker)
         st.plotly_chart(candle_chart, use_container_width=True)
         options_data, last_price = get_options_data(ticker)
