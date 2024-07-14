@@ -128,12 +128,21 @@ if ticker:
 
     st.header("Market Sentiment")
     st.write("We use here the Put Call Ratio metric. Check out my blog [post](https://zaltarba.github.io/blog/AboutMarketSentiment/) the known more about it")
-    col1, col_spacer, col2 = st.columns([1, 0.2, 1])
+    col1, col_spacer, col2 = st.columns([1, 0.2, 2])
     with col1:
         call_put_ratio, total_calls, total_puts = calculate_call_put_ratio(options_data)
-        # Determine color based on the ratio value
-        delta_color = "normal" if call_put_ratio > 1 else "inverse"  # 'normal': green for positive, red for negative; 'inverse': opposite
-        st.metric(label="Call-Put Ratio", value=f"{call_put_ratio:.2f}", delta=f"Calls: {total_calls}, Puts: {total_puts}", delta_color=delta_color)
+        # Display using custom HTML/CSS
+        ratio_html = f"""
+        <div style="font-size: 16px; font-weight: bold; color: {'green' if call_put_ratio > 1 else 'red'};">
+            Call-Put Ratio: {call_put_ratio:.2f}
+            <div style="font-size: 12px; color: gray;">
+                Calls: {total_calls}, Puts: {total_puts}
+            </div>
+        </div>
+        """
+        st.markdown(ratio_html, unsafe_allow_html=True)
+
+    
     with col_spacer:
         st.write("")
     with col2:
