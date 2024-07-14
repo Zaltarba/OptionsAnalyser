@@ -13,7 +13,7 @@ st.set_page_config(page_title="Options Analysis", page_icon="📈", layout="wide
 st.title("Is Now the Time to Buy?")
 st.markdown("""
 If you're looking for Greeks, volatility surfaces, and other useful metrics not available on your current broker, you're in the right place.
-All stock data are here fetched from Yahoo Finance, this aims to provide a clear and concise interface.
+All stock data are here fetched from Yahoo Finance, this tool aims to provide a clear and concise interface.
 """)
 
 def get_options_data(ticker):
@@ -147,6 +147,7 @@ if ticker:
         
     # Create three columns, where col_spacer is just a minimal-width spacer
     st.header("Volatility Surface")
+    st.write("Feel free to hidden the sidebar on the left for a better visibility")
     col1, col_spacer, col2 = st.columns([1, 0.2, 1])
     with col1:
         st.subheader("Call Volatility Surface")
