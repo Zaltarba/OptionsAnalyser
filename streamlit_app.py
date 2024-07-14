@@ -329,14 +329,29 @@ if ticker:
                         f"{selected_contract['Leverage']:.1f}"
                     ]
                 })
-        
+
+                greeks_definition = {
+                    'Volume': "Volume - the number of contracts traded during a given period.",
+                    'Open Interest': "Open Interest - the total number of outstanding derivative contracts that have not been settled.",
+                    'Implied Volatility': "Implied Volatility - a metric that reflects the market's forecast of a likely movement in a security's price.",
+                    'Delta': "Delta - measures the rate of change of the option price with respect to changes in the underlying asset's price.",
+                    'Gamma': "Gamma - measures the rate of change in Delta with respect to changes in the underlying asset's price.",
+                    'Theta': "Theta - measures the rate of change of the option's price with respect to the passage of time.",
+                    'Vega': "Vega - measures sensitivity of the option price to changes in volatility of the underlying asset.",
+                    'Rho': "Rho - measures the sensitivity of an option's price to changes in interest rates.",
+                    'Leverage': "Leverage - indicates how much an option's price will move for a one percent change in the underlying asset's price."
+                }
+                df_greeks = contract_details_df.set_index('Metric').T
                 # Display the DataFrame
                 # Use columns to center the dataframe
                 col1, col2, col3 = st.columns([1,3,1])
                 with col2:  # Use the middle column to display the dataframe
                     st.dataframe(
-                        contract_details_df.set_index('Metric').T, 
-                        hide_index=True
+                        df_greeks, 
+                        column_config={
+                            col:st.column_config.NumberColumn(col, help=greeks_definition[col]) for col in df_greeks.columns
+                            }, 
+                        hide_index=True, 
                     )
             else:
                 st.write("No contract details available for the selected type and date.")
