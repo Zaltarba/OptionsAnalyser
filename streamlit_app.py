@@ -188,13 +188,13 @@ def compute_volatility_surface_plotly(options_data, current_price=1):
 # Input area in sidebar
 ticker = st.text_input('Enter ticker to be studied, e.g. MA,META,V,AMZN,JPM,BA', '').upper()
 # Create tabs
-tab1, tab2, tab3, tab4 = st.tabs(["Market Sentiment", "Selected Contract", "Volatility Surface", "Additional Info"])
+tab1, tab2, tab3, tab4 = st.tabs(["Market Sentiment", "Greeks", "Volatility Surface", "Additional Info"])
 
 if ticker:
     options_data, last_price = get_options_data(ticker)
     # Tab 1: Market Sentiment
     with tab1:
-        st.header("Market Sentiment")
+        
         st.write("We use here the Put Call Ratio metric. Check out my blog [post](https://zaltarba.github.io/blog/AboutMarketSentiment/) the known more about it")
     
         call_put_ratio, total_calls, total_puts = calculate_call_put_ratio(options_data)
@@ -215,12 +215,10 @@ if ticker:
 
     # Tab 2: Selected Contract Details
     with tab2:
-
-        st.subheader("Get Greeks")
         st.subheader("Greeks Parameters")
         
         # Create a row for input fields using columns
-        col1, col2, col3, col4 = st.columns(3)
+        col1, col2, col3, col4 = st.columns(4)
         
         # Place the risk-free rate input in the first column
         with col1:
