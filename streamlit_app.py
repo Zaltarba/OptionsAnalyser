@@ -334,7 +334,10 @@ if ticker:
                 # Use columns to center the dataframe
                 col1, col2, col3 = st.columns([1,3,1])
                 with col2:  # Use the middle column to display the dataframe
-                    st.dataframe(contract_details_df.set_index('Metric').T, hide_index=True)
+                    st.dataframe(
+                        contract_details_df.set_index('Metric').T, 
+                        hide_index=True
+                    )
             else:
                 st.write("No contract details available for the selected type and date.")
 
@@ -368,7 +371,13 @@ if ticker:
         st.subheader("Financial Key Stats")
         financial_stats_1, financial_stats_2 = get_financial_stats(ticker)
         st.dataframe(financial_stats_1, hide_index=True)
-        st.dataframe(financial_stats_2, hide_index=True)
+        st.dataframe(
+            financial_stats_2, 
+            column_config={
+                col:st.column_config.NumberColumn(col, format=”$ %d") for col in financial_stats_2.columns
+                }, 
+            hide_index=True
+        )
 
 else:
     st.write("Please use the interactive window on the left to provide the ticker and some required values.")
