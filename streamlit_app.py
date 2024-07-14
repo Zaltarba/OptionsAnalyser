@@ -193,7 +193,7 @@ def plot_call_put_ratio(ratios_df):
         ratios_df, 
         x='Month', 
         y='Call-Put Ratio',
-        title='Monthly Call-Put Ratio',
+        title='',
         labels={'Month': 'Expiration Month', 'Call-Put Ratio': 'Ratio'},
         markers=True
         )  # Use markers to highlight data points
