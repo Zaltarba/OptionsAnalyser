@@ -45,6 +45,12 @@ def get_options_data(ticker):
     
     return all_options, last_price
 
+def calculate_call_put_ratio(options_data):
+    total_calls = options_data[options_data['Type'] == 'Call']['volume'].sum()
+    total_puts = options_data[options_data['Type'] == 'Put']['volume'].sum()
+    ratio = total_calls / total_puts if total_puts != 0 else float('inf')  # Avoid division by zero
+    return ratio, total_calls, total_puts
+
 def compute_volatility_surface_plotly(options_data, current_price=1):
     x = options_data['Time to Expiration']
     y = np.log(options_data['strike'] / current_price)
@@ -90,6 +96,10 @@ if ticker:
 
     st.header("Market Sentiment")
     st.write("We use here the Put Call Ratio metric. Check out my blog [post](https://zaltarba.github.io/blog/AboutMarketSentiment/) the known more about it")
+
+    call_put_ratio, total_calls, total_puts = calculate_call_put_ratio(options_data)
+    ratio_color = "#00ff00" if call_put_ratio > 1 else "#ff0000"
+    st.metric(label="Call-Put Ratio", value=f"{call_put_ratio:.2f}", delta=f"Calls: {total_calls}, Puts: {total_puts}", delta_color=ratio_color)
     
     # Create three columns, where col_spacer is just a minimal-width spacer
     st.header("Volatility Surface")
