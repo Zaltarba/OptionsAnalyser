@@ -230,9 +230,21 @@ if ticker:
 
     # Tab 2: Market Sentiment
     with tab2:
+        
         st.header("Market Sentiment")
+        st.write("We use here the Put Call Ratio metric. Check out my blog [post](https://zaltarba.github.io/blog/AboutMarketSentiment/) the known more about it")
+    
         call_put_ratio, total_calls, total_puts = calculate_call_put_ratio(options_data)
-        st.write(f"**Call-Put Ratio:** {call_put_ratio:.2f} (Calls: {total_calls}, Puts: {total_puts})")
+        # Display using custom HTML/CSS
+        ratio_html = f"""
+        <div style="font-size: 16px; font-weight: bold; color: {'green' if call_put_ratio > 1 else 'red'};">
+            Call-Put Ratio: {call_put_ratio:.2f}
+            <div style="font-size: 12px; color: gray;">
+                Calls: {total_calls}, Puts: {total_puts}
+            </div>
+        </div>
+        """
+        st.markdown(ratio_html, unsafe_allow_html=True)
 
         monthly_ratios = calculate_monthly_call_put_ratios(options_data)
         call_put_ratio_fig = plot_call_put_ratio(monthly_ratios)
