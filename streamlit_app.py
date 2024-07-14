@@ -272,12 +272,14 @@ if ticker:
                 sentiment = "Neutral"
                 sentiment_color = "gray"
         
-            # Display using custom HTML/CSS
+            # Display using custom HTML/CSS centered
             ratio_html = f"""
-            <div style="font-size: 16px; font-weight: bold; color: {sentiment_color};">
-                Call-Put Ratio: {call_put_ratio:.2f} - Market is {sentiment}
-                <div style="font-size: 12px; color: gray;">
-                    Calls: {total_calls}, Puts: {total_puts}
+            <div style="text-align: center; width: 100%;">
+                <div style="font-size: 16px; font-weight: bold; color: {sentiment_color};">
+                    Call-Put Ratio: {call_put_ratio:.2f} - Market is {sentiment}
+                    <div style="font-size: 12px; color: gray;">
+                        Calls: {total_calls}, Puts: {total_puts}
+                    </div>
                 </div>
             </div>
             """
