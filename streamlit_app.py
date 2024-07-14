@@ -5,6 +5,7 @@ import plotly.graph_objects as go
 import numpy as np
 from scipy.interpolate import griddata
 from scipy.ndimage import gaussian_filter
+import plotly.express as px
 
 # Set page config for dark theme
 st.set_page_config(page_title="Options Analysis", page_icon="📈", layout="wide",)
@@ -50,6 +51,36 @@ def calculate_call_put_ratio(options_data):
     total_puts = options_data[options_data['Type'] == 'Put']['volume'].sum()
     ratio = total_calls / total_puts if total_puts != 0 else float('inf')  # Avoid division by zero
     return ratio, total_calls, total_puts
+
+def calculate_monthly_call_put_ratios(options_data):
+    # Convert expiration dates to month-year format
+    options_data['Month'] = pd.to_datetime(options_data['Expiration']).dt.to_period('M')
+    # Group by Type and Month
+    grouped = options_data.groupby(['Type', 'Month'])
+    # Calculate total volume for Calls and Puts separately
+    monthly_volumes = grouped['volume'].sum().unstack('Type')
+    # Calculate Call-Put Ratios
+    monthly_volumes['Call-Put Ratio'] = monthly_volumes['Call'] / monthly_volumes['Put']
+    return monthly_volumes[['Call-Put Ratio']]
+
+def plot_call_put_ratio(ratios_df):
+    # Reset index to use 'Month' in the plot
+    ratios_df = ratios_df.reset_index()
+    fig = px.line(
+        ratios_df, 
+        x='Month', 
+        y='Call-Put Ratio',
+        title='Monthly Call-Put Ratio',
+        labels={'Month': 'Expiration Month', 'Call-Put Ratio': 'Ratio'},
+        markers=True
+        )  # Use markers to highlight data points
+    fig.update_layout(
+        xaxis_title='Month',
+        yaxis_title='Call-Put Ratio',
+        xaxis=dict(tickformat="%Y-%m"),
+        hovermode='x'
+        )
+    return fig
 
 def compute_volatility_surface_plotly(options_data, current_price=1):
     x = options_data['Time to Expiration']
