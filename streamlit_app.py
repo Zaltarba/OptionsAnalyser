@@ -311,17 +311,29 @@ if ticker:
                 strike = st.selectbox("Strike Price", strikes)
                 
             selected_contract = available_contracts[available_contracts['strike'] == strike].iloc[0]
-            # Display the selected contract's details in a new section
-            st.subheader("Selected Contract Details")
-            st.write(f"**Volume:** {selected_contract['volume']}")
-            st.write(f"**Open Interest:** {selected_contract['openInterest']}")
-            st.write(f"**Implied Volatility:** {selected_contract['impliedVolatility']}")
-            st.write(f"**Delta:** {selected_contract['delta']}")
-            st.write(f"**Gamma:** {selected_contract['gamma']}")
-            st.write(f"**Theta:** {selected_contract['theta']}")
-            st.write(f"**Vega:** {selected_contract['vega']}")
-            st.write(f"**Rho:** {selected_contract['rho']}")
-            st.write(f"**Leverage:** {round(selected_contract['Leverage'], 1)}")
+            
+            if not selected_contract.empty:
+                
+                # Create a DataFrame from the selected contract details
+                contract_details_df = pd.DataFrame({
+                    "Metric": ["Volume", "Open Interest", "Implied Volatility", "Delta", "Gamma", "Theta", "Vega", "Rho", "Leverage"],
+                    "Value": [
+                        selected_contract['volume'],
+                        selected_contract['openInterest'],
+                        f"{selected_contract['impliedVolatility']:.2f}",
+                        f"{selected_contract['delta']:.4f}",
+                        f"{selected_contract['gamma']:.4f}",
+                        f"{selected_contract['theta']:.4f}",
+                        f"{selected_contract['vega']:.4f}",
+                        f"{selected_contract['rho']:.4f}",
+                        f"{selected_contract['Leverage']:.1f}"
+                    ]
+                })
+        
+                # Display the DataFrame
+                st.dataframe(contract_details_df.set_index('Metric'), height=300)
+            else:
+                st.write("No contract details available for the selected type and date.")
 
     # Tab 3: Volatility Surface
     with tab3:
