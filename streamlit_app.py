@@ -126,6 +126,39 @@ if ticker:
     filtered_data_calls = options_data[(options_data["Type"] == "Call") & (options_data["volume"] >= min_volume) & (options_data["strike"] >= min_strike) & (options_data["strike"] <= max_strike)]
     filtered_data_puts = options_data[(options_data["Type"] == "Put") & (options_data["volume"] >= min_volume) & (options_data["strike"] >= min_strike) & (options_data["strike"] <= max_strike)]
 
+    st.header("Asking for Greeks ?")
+    st.write("Please select a contract")
+    # Assume 'options_data' is your DataFrame with all the options contracts
+    expiration_dates = sorted(options_data['Expiration'].unique())
+    expiration = st.selectbox("Expiration Date", expiration_dates)
+
+    if expiration:
+        # Filter options for the selected expiration date
+        available_contracts = options_data[options_data['Expiration'] == expiration]
+        # Allow user to select between Calls and Puts
+        option_type = st.radio("Select Option Type", ['Call', 'Put'])
+        filtered_contracts = available_contracts[available_contracts['Type'] == option_type]
+        # Display contracts for selection
+        contract_display = filtered_contracts.apply(lambda x: f"Strike {x['strike']}, Vol {x['volume']}", axis=1)
+        selected_contract_display = st.selectbox("Select Contract", contract_display)
+        # Retrieve the selected contract's details
+        selected_contract = filtered_contracts[filtered_contracts.apply(lambda x: f"Strike {x['strike']}, Vol {x['volume']}", axis=1) == selected_contract_display].iloc[0]
+        
+        # Display the selected contract's details and Greeks
+        st.subheader("Selected Contract Details")
+        st.write(f"**Type:** {selected_contract['Type']}")
+        st.write(f"**Strike Price:** {selected_contract['strike']}")
+        st.write(f"**Volume:** {selected_contract['volume']}")
+        st.write(f"**Open Interest:** {selected_contract['openInterest']}")
+        st.write(f"**Implied Volatility:** {selected_contract['impliedVolatility']}")
+        
+        # Assuming you have Greeks in your data
+        if 'delta' in selected_contract and 'gamma' in selected_contract:
+            st.write(f"**Delta:** {selected_contract['delta']}")
+            st.write(f"**Gamma:** {selected_contract['gamma']}")
+            st.write(f"**Theta:** {selected_contract['theta']}")
+            st.write(f"**Vega:** {selected_contract['vega']}")
+
     st.header("Market Sentiment")
     st.write("We use here the Put Call Ratio metric. Check out my blog [post](https://zaltarba.github.io/blog/AboutMarketSentiment/) the known more about it")
 
