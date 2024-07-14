@@ -253,6 +253,7 @@ if ticker:
     # Tab 3: Volatility Surface
     with tab3:
         st.header("Volatility Surface")
+        st.write("Feel free to hidden the sidebar on the left for a better visibility")
         col1, col2 = st.columns(2)
         with col1:
             st.subheader("Call Volatility Surface")
