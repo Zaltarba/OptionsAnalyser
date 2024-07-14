@@ -220,13 +220,12 @@ if ticker:
         # Using Markdown with inline styles for centering text
         st.markdown("""
             <style>
-            .centered {
-                text-align: center;
+            .big-font {
+                font-size:30px; 
+                text-align:center;
             }
             </style>
-            <div class="centered">
-                Stock Price Evolution
-            </div>
+            <p class="big-font">Stock Price Evolution</p>
             """, unsafe_allow_html=True)
         candle_chart = plot_stock(ticker)
         st.plotly_chart(candle_chart, use_container_width=True)
