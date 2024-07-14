@@ -188,7 +188,7 @@ def compute_volatility_surface_plotly(options_data, current_price=1):
 # Input area in sidebar
 ticker = st.text_input('Enter ticker to be studied, e.g. MA,META,V,AMZN,JPM,BA', '').upper()
 # Create tabs
-tab1, tab2, tab3, tab4 = st.tabs(["Selected Contract", "Market Sentiment", "Volatility Surface", "Additional Info"])
+tab1, tab2, tab3, tab4 = st.tabs(["Market Sentiment", "Selected Contract", "Volatility Surface", "Additional Info"])
 
 if ticker:
     options_data, last_price = get_options_data(ticker)
@@ -249,7 +249,7 @@ if ticker:
         else:
             strikes = sorted(available_contracts['strike'].unique())
             with col4:
-                strike = st.selectbox("Strike Price", strikes)$
+                strike = st.selectbox("Strike Price", strikes)
                 
             selected_contract = available_contracts[available_contracts['strike'] == strike].iloc[0]
             # Display the selected contract's details in a new section
