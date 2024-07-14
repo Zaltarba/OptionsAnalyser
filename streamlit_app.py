@@ -23,7 +23,7 @@ def plot_stock(ticker):
 
     try:
         # Get historical data for the last year
-        data = stock.history(period="1y")
+        data = stock.history(period="1y", interval="1d)
         if data.empty:
             st.error("No data fetched for the ticker. Please check the ticker symbol.")
             return None
@@ -217,8 +217,8 @@ ticker = st.text_input('Enter ticker to be studied, e.g. MA,META,V,AMZN,JPM,BA',
 tab1, tab2, tab3, tab4 = st.tabs(["Market Sentiment", "Greeks", "Volatility Surface", "Additional Info"])
 
 if ticker:
-    
-    st.plotly_chart(plot_stock(selected_stock), use_container_width=True)
+    candle_chart = plot_stock(selected_stock)
+    st.plotly_chart(candle_chart, use_container_width=True)
     
     options_data, last_price = get_options_data(ticker)
     # Tab 1: Market Sentiment
