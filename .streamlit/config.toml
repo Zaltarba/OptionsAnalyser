@@ -1,3 +1,18 @@
 [theme]
+# Base theme: light or dark
 base="dark"
-primaryColor="purple"
+
+# Primary color: Used for primary buttons and active states
+primaryColor="#2ca02c"
+
+# Background color: Used for the main background
+backgroundColor="#0e1117"
+
+# Secondary background color: Used for sidebar and cards background
+secondaryBackgroundColor="#262d31"
+
+# Text color: Used mostly for text
+textColor="#FAFAFA"
+
+# Font style: Default is sans serif
+font="sans serif"
