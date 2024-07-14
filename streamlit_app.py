@@ -346,7 +346,7 @@ if ticker:
                 st.plotly_chart(fig_2, use_container_width=True)
 
     # Tab 4: Additional Info
-    with tab5:
+    with tab4:
         st.subheader("Financial Key Stats")
         financial_stats_df = get_financial_stats(ticker)
     
