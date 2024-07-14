@@ -89,7 +89,7 @@ if ticker:
     filtered_data_puts = options_data[(options_data["Type"] == "Put") & (options_data["volume"] >= min_volume) & (options_data["strike"] >= min_strike) & (options_data["strike"] <= max_strike)]
 
     st.header("Market Sentiment")
-    st.write("We use here the Put Call Ratio metric. Check out my blog [https://zaltarba.github.io/blog/AboutMarketSentiment/](post) the known more about it")
+    st.write("We use here the Put Call Ratio metric. Check out my blog [post](https://zaltarba.github.io/blog/AboutMarketSentiment/) the known more about it")
     
     # Create three columns, where col_spacer is just a minimal-width spacer
     st.header("Volatility Surface")
