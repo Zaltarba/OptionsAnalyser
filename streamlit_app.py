@@ -186,51 +186,14 @@ def compute_volatility_surface_plotly(options_data, current_price=1):
     return fig
 
 # Input area in sidebar
-st.sidebar.header("User Input Features")
-ticker = st.sidebar.text_input('Enter ticker to be studied, e.g. MA,META,V,AMZN,JPM,BA', '').upper()
+ticker = st.text_input('Enter ticker to be studied, e.g. MA,META,V,AMZN,JPM,BA', '').upper()
 # Create tabs
 tab1, tab2, tab3, tab4 = st.tabs(["Selected Contract", "Market Sentiment", "Volatility Surface", "Additional Info"])
 
 if ticker:
     options_data, last_price = get_options_data(ticker)
-    st.sidebar.subheader("Parameters for the Greeks")
-    risk_free_rate = st.sidebar.number_input('Set risk free rate', value=0.04, step=0.001)
-    options_data = add_greeks_to_options_data(options_data, last_price, risk_free_rate)
-    options_data = calculate_leverage(options_data, last_price)
-    st.sidebar.subheader("Parameters for the Volatility Surfaces")
-    min_volume = st.sidebar.number_input('Set minimum volume', value=1000, step=25)
-    min_strike = int(last_price * 0.8)
-    max_strike = int(last_price * 1.2)
-    step = int(last_price * 0.01)
-    min_strike = st.sidebar.slider('Select minimum strike price', 0, int(last_price*2), value=min_strike, step=step)
-    max_strike = st.sidebar.slider('Select maximum strike price', 0, int(last_price*2), value=max_strike, step=step)
-    filtered_data_calls = options_data[(options_data["Type"] == "Call") & (options_data["volume"] >= min_volume) & (options_data["strike"] >= min_strike) & (options_data["strike"] <= max_strike)]
-    filtered_data_puts = options_data[(options_data["Type"] == "Put") & (options_data["volume"] >= min_volume) & (options_data["strike"] >= min_strike) & (options_data["strike"] <= max_strike)]
-
-    # Tab 1: Selected Contract Details
+    # Tab 1: Market Sentiment
     with tab1:
-        st.subheader("Selected Contract Details")
-        # Assume options_data is already populated with required data
-        expiration_dates = sorted(options_data['Expiration'].unique())
-        expiration = st.selectbox("Expiration Date", expiration_dates)
-        option_type = st.selectbox("Contract Type", ["Call", "Put"])
-        available_contracts = options_data[(options_data['Expiration'] == expiration) & (options_data['Type'] == option_type)]
-        strike = st.selectbox("Strike Price", sorted(available_contracts['strike'].unique()))
-        selected_contract = available_contracts[available_contracts['strike'] == strike].iloc[0]
-        
-        st.write(f"**Volume:** {selected_contract['volume']}")
-        st.write(f"**Open Interest:** {selected_contract['openInterest']}")
-        st.write(f"**Implied Volatility:** {selected_contract['impliedVolatility']}")
-        st.write(f"**Delta:** {selected_contract['delta']}")
-        st.write(f"**Gamma:** {selected_contract['gamma']}")
-        st.write(f"**Theta:** {selected_contract['theta']}")
-        st.write(f"**Vega:** {selected_contract['vega']}")
-        st.write(f"**Rho:** {selected_contract['rho']}")
-        st.write(f"**Leverage:** {round(selected_contract['Leverage'], 1)}")
-
-    # Tab 2: Market Sentiment
-    with tab2:
-        
         st.header("Market Sentiment")
         st.write("We use here the Put Call Ratio metric. Check out my blog [post](https://zaltarba.github.io/blog/AboutMarketSentiment/) the known more about it")
     
@@ -250,10 +213,46 @@ if ticker:
         call_put_ratio_fig = plot_call_put_ratio(monthly_ratios)
         st.plotly_chart(call_put_ratio_fig, use_container_width=True)
 
+    # Tab 2: Selected Contract Details
+    with tab2:
+        st.subheader("Get Greeks")
+
+        st.sidebar.subheader("Greeks Parameters")
+        risk_free_rate = st.number_input('Set risk free rate', value=0.04, step=0.001)
+        options_data_with_greeks = add_greeks_to_options_data(options_data, last_price, risk_free_rate)
+        options_data_with_greeks = calculate_leverage(options_data, last_price)
+            
+        # Assume options_data is already populated with required data
+        expiration_dates = sorted(options_data_with_greeks['Expiration'].unique())
+        expiration = st.selectbox("Expiration Date", expiration_dates)
+        option_type = st.selectbox("Contract Type", ["Call", "Put"])
+        available_contracts = options_data_with_greeks[(options_data['Expiration'] == expiration) & (options_data['Type'] == option_type)]
+        strike = st.selectbox("Strike Price", sorted(available_contracts['strike'].unique()))
+        selected_contract = available_contracts[available_contracts['strike'] == strike].iloc[0]
+        
+        st.write(f"**Volume:** {selected_contract['volume']}")
+        st.write(f"**Open Interest:** {selected_contract['openInterest']}")
+        st.write(f"**Implied Volatility:** {selected_contract['impliedVolatility']}")
+        st.write(f"**Delta:** {selected_contract['delta']}")
+        st.write(f"**Gamma:** {selected_contract['gamma']}")
+        st.write(f"**Theta:** {selected_contract['theta']}")
+        st.write(f"**Vega:** {selected_contract['vega']}")
+        st.write(f"**Rho:** {selected_contract['rho']}")
+        st.write(f"**Leverage:** {round(selected_contract['Leverage'], 1)}")
+        
     # Tab 3: Volatility Surface
     with tab3:
         st.header("Volatility Surface")
-        st.write("Feel free to hidden the sidebar on the left for a better visibility")
+        st.subheader("Parameters for the Volatility Surfaces")
+        min_volume = st.number_input('Set minimum volume', value=1000, step=25)
+        min_strike = int(last_price * 0.8)
+        max_strike = int(last_price * 1.2)
+        step = int(last_price * 0.01)
+        min_strike = st.slider('Select minimum strike price', 0, int(last_price*2), value=min_strike, step=step)
+        max_strike = st.slider('Select maximum strike price', 0, int(last_price*2), value=max_strike, step=step)
+        filtered_data_calls = options_data[(options_data["Type"] == "Call") & (options_data["volume"] >= min_volume) & (options_data["strike"] >= min_strike) & (options_data["strike"] <= max_strike)]
+        filtered_data_puts = options_data[(options_data["Type"] == "Put") & (options_data["volume"] >= min_volume) & (options_data["strike"] >= min_strike) & (options_data["strike"] <= max_strike)]
+            
         col1, col2 = st.columns(2)
         with col1:
             st.subheader("Call Volatility Surface")
