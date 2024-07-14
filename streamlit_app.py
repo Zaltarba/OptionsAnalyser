@@ -345,32 +345,31 @@ if ticker:
                 fig_2 = compute_volatility_surface_plotly(filtered_data_puts, last_price)
                 st.plotly_chart(fig_2, use_container_width=True)
 
-        # Tab 4: Additional Info
-    with tab4:
+    # Tab 4: Additional Info
+    with tab5:
         st.subheader("Financial Key Stats")
         financial_stats_df = get_financial_stats(ticker)
     
-        # Convert DataFrame to HTML and style with CSS
-        df_html = financial_stats_df.to_html(index=False)
+        # Convert DataFrame to HTML and ensure styles are properly scoped
+        df_html = financial_stats_df.to_html(index=False, classes="table table-striped", border=0)
         styled_html = f"""
         <style>
-            table {{
+            .table {{
                 width: 100%;
-                border-collapse: collapse;
+                margin-bottom: 1rem;
+                color: #212529;
             }}
-            th {{
-                color: #ffffff;
-                background-color: #4CAF50;
-                padding: 8px;
-                text-align: center;
+            .table-striped tbody tr:nth-of-type(odd) {{
+                background-color: rgba(0,0,0,.05);
             }}
-            td {{
-                padding: 8px;
-                text-align: center;
-                border-bottom: 1px solid #ddd;
+            .table td, .table th {{
+                padding: .75rem;
+                vertical-align: top;
+                border-top: 1px solid #dee2e6;
             }}
-            tr:nth-child(even) {{
-                background-color: #f2f2f2;
+            .table thead th {{
+                vertical-align: bottom;
+                border-bottom: 2px solid #dee2e6;
             }}
         </style>
         {df_html}
