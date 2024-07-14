@@ -217,7 +217,7 @@ ticker = st.text_input('Enter ticker to be studied, e.g. MA,META,V,AMZN,JPM,BA',
 tab1, tab2, tab3, tab4 = st.tabs(["Market Sentiment", "Greeks", "Volatility Surface", "Additional Info"])
 
 if ticker:
-    candle_chart = plot_stock(selected_stock)
+    candle_chart = plot_stock(ticker)
     st.plotly_chart(candle_chart, use_container_width=True)
     
     options_data, last_price = get_options_data(ticker)
