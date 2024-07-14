@@ -12,7 +12,8 @@ st.set_page_config(page_title="Options Analysis", page_icon="📈", layout="wide
 st.title("Is Now the Time to Buy?")
 st.markdown("""
 If you're looking for Greeks, volatility surfaces, and other useful metrics not available on your current broker, you're in the right place.
-All stock data are fetched from Yahoo Finance.
+All stock data are here fetched from Yahoo Finance, this aims to provide a clear and concise interface.
+Please use the interactive window on the left to provide the ticker and some required values.
 """)
 
 def get_options_data(ticker):
@@ -90,7 +91,12 @@ if ticker:
     filtered_data_calls = options_data[(options_data["Type"] == "Call") & (options_data["volume"] >= min_volume) & (options_data["strike"] >= min_strike) & (options_data["strike"] <= max_strike)]
     filtered_data_puts = options_data[(options_data["Type"] == "Put") & (options_data["volume"] >= min_volume) & (options_data["strike"] >= min_strike) & (options_data["strike"] <= max_strike)]
 
-    col1, col2 = st.columns(2)
+    # Define the gap size in pixels
+    gap_size = 30  # You can adjust this value based on your preference
+    
+    # Create two columns with a specified gap between them
+    col1, col2 = st.columns([1, 1], gap=gap_size)
+    
     with col1:
         st.subheader("Call Volatility Surface")
         if not filtered_data_calls.empty:
@@ -98,6 +104,7 @@ if ticker:
             st.plotly_chart(fig_1, use_container_width=True)
         else:
             st.write("No data available for calls within the selected range.")
+
     with col2:
         st.subheader("Put Volatility Surface")
         if not filtered_data_puts.empty:
@@ -105,8 +112,8 @@ if ticker:
             st.plotly_chart(fig_2, use_container_width=True)
         else:
             st.write("No data available for puts within the selected range.")
-else:
-    st.sidebar.write("No options data available.")
+    else:
+        st.sidebar.write("No options data available.")
 
 # Hide streamlit branding
 st.markdown("""
