@@ -225,7 +225,7 @@ if ticker:
         expiration_dates = sorted(options_data_with_greeks['Expiration'].unique())
         expiration = st.selectbox("Expiration Date", expiration_dates)
         option_type = st.selectbox("Contract Type", ["Call", "Put"])
-        available_contracts = options_data_with_greeks[(options_data['Expiration'] == expiration) & (options_data['Type'] == option_type)]
+        available_contracts = options_data_with_greeks[(options_data_with_greeks['Expiration'] == expiration) & (options_data_with_greeks['Type'] == option_type)]
         strike = st.selectbox("Strike Price", sorted(available_contracts['strike'].unique()))
         selected_contract = available_contracts[available_contracts['strike'] == strike].iloc[0]
         
