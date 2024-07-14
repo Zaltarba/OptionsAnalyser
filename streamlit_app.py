@@ -79,6 +79,21 @@ def compute_greeks(S, K, T, r, sigma, option_type="call"):
     
     return {"delta": delta, "gamma": gamma, "theta": theta, "vega": vega, "rho": rho}
 
+def calculate_leverage(options_data, stock_price):
+    """
+    Adds a leverage factor column to the options data DataFrame.
+    
+    Parameters:
+    options_data : DataFrame : The options data DataFrame
+    stock_price : float : Current stock price
+    
+    Returns:
+    DataFrame : The options data DataFrame with an additional 'Leverage' column
+    """
+    # Ensure that the premium (lastPrice) and delta are in the DataFrame
+    options_data['Leverage'] = (options_data['delta'] * stock_price) / options_data['lastPrice']
+    return options_data
+
 def add_greeks_to_options_data(options_data, stock_price, risk_free_rate=0.01):
     """
     Adds Greek metrics to the options DataFrame.
@@ -179,6 +194,7 @@ if ticker:
     st.sidebar.subheader("Parameters for the Greeks")
     risk_free_rate = st.sidebar.number_input('Set risk free rate', value=0.04, step=0.001)
     options_data = add_greeks_to_options_data(options_data, last_price, risk_free_rate)
+    options_data = calculate_leverage(options_data, last_price)
     st.sidebar.subheader("Parameters for the Volatility Surfaces")
     min_volume = st.sidebar.number_input('Set minimum volume', value=1000, step=25)
     min_strike = int(last_price * 0.8)
@@ -217,6 +233,7 @@ if ticker:
     st.write(f"**Theta:** {selected_contract['theta'].iloc[0]}")
     st.write(f"**Vega:** {selected_contract['vega'].iloc[0]}")
     st.write(f"**Rho:** {selected_contract['rho'].iloc[0]}")
+    st.write(f"**Leverage:** {round(selected_contract['Leverage'].iloc[0], 1)}")
 
     st.header("Market Sentiment")
     st.write("We use here the Put Call Ratio metric. Check out my blog [post](https://zaltarba.github.io/blog/AboutMarketSentiment/) the known more about it")
