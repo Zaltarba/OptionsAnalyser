@@ -61,8 +61,8 @@ def compute_volatility_surface_plotly(options_data, current_price=1):
         title='Volatility Surface',
         scene=dict(
             xaxis_title='Time to Expiration (Years)',
-            yaxis_title='Strike Price ($)',
-            zaxis_title='Implied Volatility (%)',
+            yaxis_title='Log Strike Price / Current Price',
+            zaxis_title='Implied Volatility',
             xaxis=dict(tickformat='.2f'),
             yaxis=dict(tickformat='$,.2f'),
             zaxis=dict(tickformat='.3f'),
