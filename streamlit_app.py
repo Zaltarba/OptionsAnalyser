@@ -55,6 +55,7 @@ def calculate_call_put_ratio(options_data):
 def calculate_monthly_call_put_ratios(options_data):
     # Convert expiration dates to month-year format
     options_data['Month'] = pd.to_datetime(options_data['Expiration']).dt.to_period('M')
+    ratios_df['Month'] = ratios_df['Month'].dt.strftime('%Y-%m')
     # Group by Type and Month
     grouped = options_data.groupby(['Type', 'Month'])
     # Calculate total volume for Calls and Puts separately
