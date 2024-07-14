@@ -43,6 +43,24 @@ def plot_stock(ticker):
                       xaxis_rangeslider_visible=False)
     return fig
 
+def get_financial_stats(ticker):
+    stock = yf.Ticker(ticker)
+    stats = {
+        'PE Ratio': stock.info.get('trailingPE', 'N/A'),
+        'Price/Sales (ttm)': stock.info.get('priceToSalesTrailing12Months', 'N/A'),
+        'EBITDA Margin': stock.info.get('ebitdaMargins', 'N/A'),
+        'Market Cap': stock.info.get('marketCap', 'N/A'),
+        'Enterprise Value': stock.info.get('enterpriseValue', 'N/A'),
+        'Profit Margins': stock.info.get('profitMargins', 'N/A'),
+        'Return on Assets': stock.info.get('returnOnAssets', 'N/A'),
+        'Return on Equity': stock.info.get('returnOnEquity', 'N/A'),
+        'Revenue Per Share': stock.info.get('revenuePerShare', 'N/A'),
+        'Quarterly Revenue Growth': stock.info.get('revenueGrowth', 'N/A'),
+        'Gross Profits': stock.info.get('grossProfits', 'N/A'),
+        'Operating Cash Flow': stock.info.get('operatingCashflow', 'N/A')
+    }
+    return pd.DataFrame([stats])
+
 def get_options_data(ticker):
     stock = yf.Ticker(ticker)
     expirations = stock.options
@@ -231,7 +249,7 @@ if ticker:
         st.plotly_chart(candle_chart, use_container_width=True)
         options_data, last_price = get_options_data(ticker)
     # Create tabs
-    tab1, tab2, tab3, tab4 = st.tabs(["Market Sentiment", "Greeks", "Volatility Surface", "Additional Info"])
+    tab1, tab2, tab3, tab4 = st.tabs(["Market Sentiment", "Greeks", "Volatility Surface", "Key Stats"])
     # Tab 1: Market Sentiment
     with tab1:
         
@@ -329,8 +347,9 @@ if ticker:
 
     # Tab 4: Additional Info
     with tab4:
-        st.write("This section can contain any additional information, instructions, or analytics you might want to share.")
-
+        st.subheader("Financial Key Stats")
+        financial_stats_df = get_financial_stats(ticker)
+        st.table(financial_stats_df)
 else:
     st.write("Please use the interactive window on the left to provide the ticker and some required values.")
 
