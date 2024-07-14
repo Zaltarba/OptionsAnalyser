@@ -349,7 +349,7 @@ if ticker:
     with tab4:
         st.subheader("Financial Key Stats")
         financial_stats_df = get_financial_stats(ticker)
-        st.table(financial_stats_df, hide_index=True)
+        st.dataframe(financial_stats_df, hide_index=True)
 
 else:
     st.write("Please use the interactive window on the left to provide the ticker and some required values.")
