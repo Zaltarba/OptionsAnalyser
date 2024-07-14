@@ -23,7 +23,7 @@ def plot_stock(ticker):
 
     try:
         # Get historical data for the last year
-        data = stock.history(period="1y", interval="1d)
+        data = stock.history(period="1y", interval="1d")
         if data.empty:
             st.error("No data fetched for the ticker. Please check the ticker symbol.")
             return None
