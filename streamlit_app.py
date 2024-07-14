@@ -131,18 +131,18 @@ if ticker:
     # Assume 'options_data' is your DataFrame with all the options contracts
     expiration_dates = sorted(options_data['Expiration'].unique())
     expiration = st.selectbox("Expiration Date", expiration_dates)
-
-    if expiration:
+    option_type = st.selectbox("Contract", ["Call", "Put"])
+    
+    if expiration & contract:
         # Filter options for the selected expiration date
         available_contracts = options_data[options_data['Expiration'] == expiration]
         # Allow user to select between Calls and Puts
-        option_type = st.radio("Select Option Type", ['Call', 'Put'])
         filtered_contracts = available_contracts[available_contracts['Type'] == option_type]
         # Display contracts for selection
-        contract_display = filtered_contracts.apply(lambda x: f"Strike {x['strike']}, Vol {x['volume']}", axis=1)
-        selected_contract_display = st.selectbox("Select Contract", contract_display)
-        # Retrieve the selected contract's details
-        selected_contract = filtered_contracts[filtered_contracts.apply(lambda x: f"Strike {x['strike']}, Vol {x['volume']}", axis=1) == selected_contract_display].iloc[0]
+        available_strikes = filtered_contracts["strike"].unique()
+        strike = st.selectbox("Strike", available_strikes)
+
+        select_contract = filtered_contracts[filtered_contracts["strike"] == strike]
         
         # Display the selected contract's details and Greeks
         st.subheader("Selected Contract Details")
