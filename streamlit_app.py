@@ -331,7 +331,7 @@ if ticker:
                 })
         
                 # Display the DataFrame
-                st.dataframe(contract_details_df.set_index('Metric'), height=300)
+                st.dataframe(contract_details_df.set_index('Metric').T, ignore_index=True)
             else:
                 st.write("No contract details available for the selected type and date.")
 
