@@ -219,7 +219,7 @@ if ticker:
         st.subheader("Greeks Parameters")
         risk_free_rate = st.number_input('Set risk free rate', value=0.04, step=0.001)
         options_data_with_greeks = add_greeks_to_options_data(options_data, last_price, risk_free_rate)
-        options_data_with_greeks = calculate_leverage(options_data, last_price)
+        options_data_with_greeks = calculate_leverage(options_data_with_greeks, last_price)
             
         # Assume options_data is already populated with required data
         expiration_dates = sorted(options_data_with_greeks['Expiration'].unique())
