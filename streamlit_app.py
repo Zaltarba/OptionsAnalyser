@@ -54,7 +54,6 @@ def compute_volatility_surface_plotly(options_data, current_price=1):
     yi = np.linspace(min_strike, max_strike, 100)
     xi, yi = np.meshgrid(xi, yi)
     zi = griddata((x, y), z, (xi, yi), method='cubic')
-    zi[zi < 0] = 0
     zi_smoothed = gaussian_filter(zi, sigma=1)
 
     fig = go.Figure(data=[go.Surface(x=xi, y=yi, z=zi_smoothed)])
