@@ -215,30 +215,55 @@ if ticker:
 
     # Tab 2: Selected Contract Details
     with tab2:
+
         st.subheader("Get Greeks")
         st.subheader("Greeks Parameters")
-        risk_free_rate = st.number_input('Set risk free rate', value=0.04, step=0.001)
+        
+        # Create a row for input fields using columns
+        col1, col2, col3, col4 = st.columns(3)
+        
+        # Place the risk-free rate input in the first column
+        with col1:
+            risk_free_rate = st.number_input('Set risk free rate', value=0.04, step=0.001)
+        
+        # Update options data with Greeks and leverage
         options_data_with_greeks = add_greeks_to_options_data(options_data, last_price, risk_free_rate)
         options_data_with_greeks = calculate_leverage(options_data_with_greeks, last_price)
-            
+        
         # Assume options_data is already populated with required data
         expiration_dates = sorted(options_data_with_greeks['Expiration'].unique())
-        expiration = st.selectbox("Expiration Date", expiration_dates)
-        option_type = st.selectbox("Contract Type", ["Call", "Put"])
+        
+        # Place the expiration date selector in the second column
+        with col2:
+            expiration = st.selectbox("Expiration Date", expiration_dates)
+        
+        # Place the contract type selector in the third column
+        with col3:
+            option_type = st.selectbox("Contract Type", ["Call", "Put"])
+        
+        # Once a type is selected, show available strikes in the next row
         available_contracts = options_data_with_greeks[(options_data_with_greeks['Expiration'] == expiration) & (options_data_with_greeks['Type'] == option_type)]
-        strike = st.selectbox("Strike Price", sorted(available_contracts['strike'].unique()))
-        selected_contract = available_contracts[available_contracts['strike'] == strike].iloc[0]
         
-        st.write(f"**Volume:** {selected_contract['volume']}")
-        st.write(f"**Open Interest:** {selected_contract['openInterest']}")
-        st.write(f"**Implied Volatility:** {selected_contract['impliedVolatility']}")
-        st.write(f"**Delta:** {selected_contract['delta']}")
-        st.write(f"**Gamma:** {selected_contract['gamma']}")
-        st.write(f"**Theta:** {selected_contract['theta']}")
-        st.write(f"**Vega:** {selected_contract['vega']}")
-        st.write(f"**Rho:** {selected_contract['rho']}")
-        st.write(f"**Leverage:** {round(selected_contract['Leverage'], 1)}")
-        
+        if available_contracts.empty:
+            st.write("No contracts available for the selected type and date.")
+        else:
+            strikes = sorted(available_contracts['strike'].unique())
+            with col4:
+                strike = st.selectbox("Strike Price", strikes)$
+                
+            selected_contract = available_contracts[available_contracts['strike'] == strike].iloc[0]
+            # Display the selected contract's details in a new section
+            st.subheader("Selected Contract Details")
+            st.write(f"**Volume:** {selected_contract['volume']}")
+            st.write(f"**Open Interest:** {selected_contract['openInterest']}")
+            st.write(f"**Implied Volatility:** {selected_contract['impliedVolatility']}")
+            st.write(f"**Delta:** {selected_contract['delta']}")
+            st.write(f"**Gamma:** {selected_contract['gamma']}")
+            st.write(f"**Theta:** {selected_contract['theta']}")
+            st.write(f"**Vega:** {selected_contract['vega']}")
+            st.write(f"**Rho:** {selected_contract['rho']}")
+            st.write(f"**Leverage:** {round(selected_contract['Leverage'], 1)}")
+
     # Tab 3: Volatility Surface
     with tab3:
         st.header("Volatility Surface")
