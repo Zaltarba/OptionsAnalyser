@@ -141,7 +141,7 @@ if ticker:
     available_strikes = filtered_contracts["strike"].unique()
     strike = st.selectbox("Strike", available_strikes)
 
-    select_contract = filtered_contracts[filtered_contracts["strike"] == strike]
+    selected_contract = filtered_contracts[filtered_contracts["strike"] == strike]
     
     # Display the selected contract's details and Greeks
     st.subheader("Selected Contract Details")
