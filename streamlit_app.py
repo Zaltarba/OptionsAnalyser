@@ -17,6 +17,28 @@ If you're looking for Greeks, volatility surfaces, and other useful metrics not 
 All stock data are here fetched from Yahoo Finance, this tool aims to provide a clear and concise interface.
 """)
 
+# Function to fetch and plot data
+def plot_stock(ticker):
+    data = yf.download(ticker, period="1y")
+    fig = go.Figure(
+        data=[
+            go.Candlestick(
+                x=data.index,
+                open=data['Open'],
+                high=data['High'],
+                low=data['Low'],
+                close=data['Close']
+            )
+        ]
+    )
+    fig.update_layout(
+        title=f'1 Year Chart for {ticker}',
+        xaxis_title='Date',
+        yaxis_title='Price (USD)',
+        xaxis_rangeslider_visible=False
+        )
+    return fig
+
 def get_options_data(ticker):
     stock = yf.Ticker(ticker)
     expirations = stock.options
